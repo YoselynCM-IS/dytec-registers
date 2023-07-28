@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;400&display=swap');
+
+:root {
+    --verde: #02e377;
+    --verde2:#02d16e;
+    --gris: #4a4a4a;
+    --white: #ffffff;
+    --info: #5bc0de;
+    --blue: blue;
+    --rojo: #A93235;
+    --naranja: #FB8815;
+}
+
+p, b, li, h5, a, label{
+    font-family: 'Montserrat', sans-serif;
+}
+
+#btnLogin {
+    border-radius: 20px;
+}
+
+.navbar {
+    background-color: var(--naranja);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.nav-link {
+    color: var(--white);
+    font-size: 115%;
+}
+
+.nav-link:hover {
+    background-color: var(--white);
+    color: var(--rojo) !important;
+    border: none;
+    border-radius: 20px;
+}
+
+#btnPre, #btnLogin{
+    border-color: var(--naranja);
+    background-color: var(--naranja);
+    color: var(--white);
+}
+
+#btnPre:hover, #btnLogin:hover{
+    background-color: #fb8815e3;
+    color: var(--white);
+}
+
+/* .nav-link {
+    color: var(--white);
+    font-size: 115%;
+}
+
+.nav-link:hover {
+    background-color: var(--white);
+    color: var(--info) !important;
+    border: none;
+    border-radius: 20px;
+} */
+
+#user_name, #password {
+    border-radius: 20px;
+}
+
+/* .thD {
+    width: 50px;
+} */
+
+input[type="file"]#archivoType {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+   
+   label[for="archivoType"] {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #FB8815;
+    display: inline-block;
+    transition: all .5s;
+    cursor: pointer;
+    padding: 15px 40px!important;
+    width: fit-content;
+    text-align: center;
+    border-radius: 20px;
+    }
+
+    .tab-stds .nav-link{
+        border-radius:30px;
+        background-color: var(--white);
+        color:var(--blue);
+    }
+
+    .tab-ctgs .nav-link {
+        background-color: var(--white);
+        color:var(--gris);
+    }
+
+    .tab-ctgs .nav-link.active {
+        background-color: var(--rojo) !important;
+        color:var(--white) !important;
+    }
+    
+    /* .tab-stds .nav-pills .nav-link, .show>.nav-pills .nav-link{
+        color: var(--blue) !important
+    }
+    .tab-stds .nav-pills .nav-link:hover, .show>.nav-pills .nav-link{
+        color: var(--white) !important
+    }
+    .tab-stds .nav-pills .nav-link.active, .show>.nav-pills .nav-link{
+        background: var(--blue) !important;
+        color: var(--white) !important;
+    } */
+
+#btnAddPago {
+    border-color: #FB8815;
+    background-color: #FB8815;
+    color: var(--white);
+}
+
+#btnDeletePago {
+    border-color: #80666D;
+    background-color: #80666D;
+    color: var(--white);
+}
+
+footer {
+    padding: 15px 40px !important;
+    background-color: #252B36;
+    color: var(--white);
+}
