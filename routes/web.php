@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Auth::routes();
+Route::prefix('dtec-admin')->group(function() {
+  Auth::routes();
+});
 
 Route::get('/home', 'HomeController@index')->name('home');
 

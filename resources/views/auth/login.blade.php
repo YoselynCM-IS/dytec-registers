@@ -7,7 +7,9 @@
             <div class="card mt-5">
                <div class="card-body">
                     <div class="text-center">
-                        <h4 class="card-title">Iniciar sesión</h4>
+                        <h4 class="card-title">
+                            <img src="{{ asset('images/logo-dytec.png') }}" alt="" width="450" height="200">
+                        </h4>
                     </div>
                     <hr>
                     <form method="POST" action="{{ route('login') }}">
@@ -40,10 +42,10 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="form-group row mb-0">
-                            <div class="col-md-8 offset-md-4">
+                        <div class="form-group row mb-0 text-center">
+                            <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn" id="btnLogin">
-                                    <i class="fa fa-sign-in"></i> {{ __('Iniciar sesión') }}
+                                    <i class="fa fa-user"></i> {{ __('Acceder') }}
                                 </button>
                             </div>
                         </div>

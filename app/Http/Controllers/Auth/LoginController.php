@@ -62,6 +62,6 @@ class LoginController extends Controller
     public function logout(){
         auth()->logout(); //Para poder cerrar sesión de la aplicación
         session()->flush(); //Limpiar todas las sesiones
-        return redirect('/login');
+        return redirect('/dtec-admin/login');
     }
 }

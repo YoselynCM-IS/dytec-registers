@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-row>
+        <!-- <b-row>
             <b-col sm="3" class="text-right">
                 <b-button :disabled="load" variant="dark" pill 
                     @click="moreSearch()" block>
@@ -24,14 +24,14 @@
                     <b-icon-arrow-clockwise></b-icon-arrow-clockwise> Actualizar status
                 </b-button>
             </b-col>
-        </b-row>
+        </b-row> -->
         <b-row class="mt-3">
             <b-col sm="6">
                 <b-pagination class="mt-1" v-model="currentPage" pills v-if="registros.length > 0"
                     :per-page="perPage" :total-rows="registros.length" :disabled="load">
                 </b-pagination>
             </b-col>
-            <b-col sm="6">
+            <!-- <b-col sm="6">
                 <b-row>
                     <b-col>
                         <b-form-datepicker v-model="number_rejected"></b-form-datepicker>
@@ -43,7 +43,7 @@
                         </b-button>
                     </b-col>
                 </b-row>
-            </b-col>
+            </b-col> -->
         </b-row>
         <b-table v-if="registros.length > 0" class="mt-3" responsive 
             :items="registros" :busy="load" :fields="fields"
@@ -388,15 +388,15 @@ export default {
             registros: this.registers,
             fields: [
                 { label: 'N.', key: 'index' },
-                { label: 'Escuela', key: 'school' },
-                { label: 'Alumno', key: 'name' },
-                { label: 'Libro', key: 'book' },
+                { label: 'Fecha de registro', key: 'created_at' },
+                // { label: 'Escuela', key: 'school' },
+                { label: 'Nombre', key: 'name' },
+                { label: 'Certificación', key: 'book' },
                 { label: 'Cant.', key: 'quantity' },
                 { label: 'Precio', key: 'price' },
                 { label: 'Total', key: 'total' },
-                { label: 'Fecha de registro', key: 'created_at' },
-                { label: 'Pago(s)', key: 'information' },
-                { label: 'Status', key: 'check' }
+                { label: '', key: 'information' },
+                { label: '', key: 'check' }
             ],
             modalShow: false,
             modalShow2: false,

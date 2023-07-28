@@ -20,18 +20,18 @@ p, b, li, h5, a, label{
 }
 
 .navbar {
-    background-color: var(--naranja);
+    background-color: #252B36;
     font-family: 'Montserrat', sans-serif;
 }
 
 .nav-link {
     color: var(--white);
-    font-size: 115%;
+    /* font-size: 115%; */
 }
 
 .nav-link:hover {
-    background-color: var(--white);
-    color: var(--rojo) !important;
+    /* background-color: var(--white); */
+    color: #f6a14d !important;
     border: none;
     border-radius: 20px;
 }

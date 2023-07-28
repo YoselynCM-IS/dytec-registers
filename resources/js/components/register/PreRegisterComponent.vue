@@ -421,7 +421,7 @@ export default {
                 if(response.data === 3){
                     swal("Listo", "Tus datos se guardaron correctamente. Aproximadamente en un lapso de 48 a 72 horas hábiles te haremos llegar un correo electrónico donde te notificaremos si tu registro de pago ha sido validado. Gracias.", "success")
                         .then((value) => {
-                            location.href = '/student/register';
+                            location.href = '/registro-pago';
                         });
                 }
                 if(response.data === 1) {
