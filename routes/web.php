@@ -36,11 +36,12 @@ Route::name('folios.')->prefix('folios')->group(function () {
     Route::put('marcar_ocupado', 'FolioController@marcar_ocupado')->name('marcar_ocupado');
 });
 
+Route::get('/registro-pago', 'StudentController@register' )->name('registro-pago');
+
 Route::name('student.')->prefix('student')->group(function () {
     Route::get('/show_registers', 'StudentController@show_registers' )->name('show_registers');
     Route::get('books_to_email', 'StudentController@books_to_email' )->name('books_to_email');
 
-    Route::get('/register', 'StudentController@register' )->name('register');
     // Route::post('save_student', 'StudentController@store')->name('save_student');
     Route::post('preregister', 'StudentController@store')->name('preregister');
     Route::get('/consult_data/{date}/{id}', 'StudentController@consult_data' )->name('consult_data');

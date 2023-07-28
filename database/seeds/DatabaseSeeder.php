@@ -246,7 +246,16 @@ class DatabaseSeeder extends Seeder
         //         'user_name' => 'adriana-ra', 
         //         'email'     => 'adriana@me-registers.com', 
         //         'password'  => bcrypt('zF8721%') ],
-
         // ]);
+
+        \DB::table('users')->insert([
+            0 => [
+                'role'      => 'manager',
+                'name'      => 'Yoselyn CM', 
+                'user_name' => 'yoselyn-dtec',
+                'email'     => 'yoselynmajestice@gmail.com',
+                'password'  => bcrypt('pP2621&')
+            ]
+        ]);
     }
 }
