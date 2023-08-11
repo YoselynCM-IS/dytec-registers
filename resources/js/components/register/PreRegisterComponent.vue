@@ -107,20 +107,15 @@
                 <b-row>
                     <b-col sm="5">
                         <b-form-group>
-                            <label>Número de cuenta al que se realizó el deposito</label>
+                            <label>Número de cuenta <b>ó</b> CLABE Interbancaria<br>al que se realizó el deposito</label>
                             <b-form-input v-model="form.cuenta" :disabled="load || statusCuenta"
                                 type="number" required
                             ></b-form-input>
-                            <!-- NUMERO DE CUENTA AL CUAL SE DEPOSITO -->
-                            <!-- <b-button class="mt-4" @click="checkCuenta()" pill
-                                id="btnPre" block :disabled="load || statusCuenta">
-                                <b-icon-arrow-right-circle-fill></b-icon-arrow-right-circle-fill> Continuar
-                            </b-button> -->
                         </b-form-group>
                     </b-col>
                     <b-col sm="5">
                         <b-form-group>
-                            <label>Número de orden</label>
+                            <label><br>Número de orden</label>
                             <b-form-input v-model="form.orden" :disabled="load"
                                 type="number" required
                             ></b-form-input>
@@ -146,7 +141,7 @@
                             <b-form-group>
                                 <label>Tipo de pago</label>
                                 <b-form-select v-model="comprobante.type" :disabled="load"
-                                    :options="typesCompleto" required>
+                                    :options="tipo == 'interno' ? typesCompleto:types" required>
                                 </b-form-select>
                             </b-form-group>
                         </b-col>
@@ -327,17 +322,12 @@ export default {
     mixins: [banksMixin,booksMixin,typesMixin],
     data(){
         return {
-            // csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             load: false,
-            types_externa: [
-                { value: null, text: 'Selecciona una opción', disabled: true },
-                { value: 'oxxo', text: 'OXXO'}
-            ],
             specifyBank: null,
             form: {
                 name: '', lastname: '', lastname2: '', email: '',
-                telephone: null, school_id: null, school: null, book: null,
-                quantity: 1, price: 0, a_depositar: 0,
+                telephone: null, school_id: null, school: null,
+                book: null, quantity: 1, price: 0, a_depositar: 0,
                 file: null,
                 comprobantes: [{
                     type: null, folio: '', auto: '', clave: null, 
@@ -359,15 +349,8 @@ export default {
             statusCuenta: false,
             errors: {},
             posicion: null,
-            bancomer1: '0172427206',
-            bancomer2: '012180001724272063',
-            banamex1: '5204165073723995',
-            banamex2: '002180701156103586',
-            banco_azteca1: '09330153687444',
-            banco_azteca2: '5343810206998814',
-            bancoppel1: '19000207503',
-            bancoppel2: '4169160498193532',
-            nctame: '0189525114'
+            bancomer1: '0120667501',
+            bancomer2: '012180001206675010'
         }
     },
     filters: {
@@ -523,19 +506,13 @@ export default {
         },
         checkCuenta(){
             // 0172427206
-            if(this.cuenta === this.bancomer1 || this.cuenta === this.bancomer2 || 
-                this.cuenta === this.banamex1 || this.cuenta === this.banamex2 ||
-                this.cuenta === this.bancoppel1 || this.cuenta === this.banco_azteca1 ||
-                this.cuenta === this.bancoppel2 || this.cuenta === this.banco_azteca2 || this.cuenta === this.nctame) {
+            if(this.cuenta === this.bancomer1 || this.cuenta === this.bancomer2) {
                     this.statusCuenta = true;
             } 
             else {
                 this.statusCuenta = false;
                 swal("Numero de cuenta incorrecto", "El numero de cuenta que ingresaste no corresponde al nuestro.", "error");
             }
-
-            if(this.cuenta === this.bancoppel1 || this.cuenta === this.bancoppel2) this.set_comprobante1('BANCOPPEL');
-            // if(this.cuenta === this.banco_azteca1 || this.cuenta === this.banco_azteca2) this.set_comprobante1('BANCOAZTECA');
         },
         set_comprobante1(type_bank){
             this.form.comprobantes[0].type = type_bank;
@@ -547,10 +524,6 @@ export default {
             this.form.comprobantes[0].date = '2021-09-09';
             this.form.comprobantes[0].plaza = 'REV. MANUAL ME';
             this.form.comprobantes[0].file = null;
-        },
-        validate_cta(){
-            if(this.cuenta === this.banamex1 || this.cuenta === this.banamex2) return false
-            return true;
         }
     }
 }
