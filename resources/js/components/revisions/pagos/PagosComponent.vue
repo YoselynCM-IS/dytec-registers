@@ -23,13 +23,13 @@
                 {{ data.index + 1 }}
             </template>
             <template v-slot:cell(comision_libro)="data">
-                ${{ data.item.comision_libro | numeral('0,0') }}
+                ${{ data.item.comision_libro | numeral('0,0[.]00') }}
             </template>
             <template v-slot:cell(total_comision)="data">
-                ${{ data.item.total_comision | numeral('0,0') }}
+                ${{ data.item.total_comision | numeral('0,0[.]00') }}
             </template>
             <template v-slot:cell(total_libros)="data">
-                {{ data.item.total_comision | numeral('0,0') }}
+                {{ data.item.total_comision | numeral('0,0[.]00') }}
             </template>
             <template v-slot:cell(comprobante)="data">
                 <a :href="data.item.public_url" target="_blank">Ver</a>

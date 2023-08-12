@@ -72,7 +72,6 @@ Vue.component('edit-register', require('./components/register/EditRegister.vue')
 
 Vue.component('registers-component', require('./components/register/RegistersComponent.vue').default);
 Vue.component('pre-register-component', require('./components/register/PreRegisterComponent.vue').default);
-Vue.component('adm-preregister', require('./components/register/AdmPreRegister.vue').default);
 Vue.component('search-folio', require('./components/register/SearchFolio.vue').default);
 Vue.component('information-student', require('./components/register/InformationStudent.vue').default);
 

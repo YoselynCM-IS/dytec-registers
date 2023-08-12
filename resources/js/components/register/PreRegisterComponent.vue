@@ -91,11 +91,11 @@
                         </b-row>
                         <b-row>
                             <b-col class="text-right"><label>Precio</label></b-col>
-                            <b-col sm="5">${{ form.price | numeral('0,0') }}</b-col>
+                            <b-col sm="5">${{ form.price | numeral('0,0[.]00') }}</b-col>
                         </b-row>
                         <b-row>
                             <b-col class="text-right"><label>Total</label></b-col>
-                            <b-col sm="5">${{ form.a_depositar | numeral('0,0') }}</b-col>
+                            <b-col sm="5">${{ form.a_depositar | numeral('0,0[.]00') }}</b-col>
                         </b-row>
                     </b-col>
                 </b-row>

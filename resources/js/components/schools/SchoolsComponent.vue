@@ -57,7 +57,7 @@
                     {{ data.index + 1 }}
                 </template>
                 <template v-slot:cell(price)="data">
-                    ${{ data.item.pivot.price | numeral('0,0') }}
+                    ${{ data.item.pivot.price | numeral('0,0[.]00') }}
                 </template>
                 <template v-slot:cell(remove)="data">
                     <b-button variant="danger" pill size="sm" :disabled="load"

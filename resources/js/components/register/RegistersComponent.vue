@@ -55,10 +55,10 @@
                 {{ data.item.name }}
             </template>
             <template v-slot:cell(price)="data">
-                ${{ data.item.price | numeral('0,0') }}
+                ${{ data.item.price | numeral('0,0[.]00') }}
             </template>
             <template v-slot:cell(total)="data">
-                ${{ data.item.total | numeral('0,0') }}
+                ${{ data.item.total | numeral('0,0[.]00') }}
             </template>
             <template v-slot:cell(school)="data">
                 {{ data.item.school.name }}
@@ -306,7 +306,7 @@
                         {{ data.index + 1 }}
                     </template>
                     <template v-slot:cell(total)="data">
-                        ${{ data.item.total | numeral('0,0') }}
+                        ${{ data.item.total | numeral('0,0[.]00') }}
                     </template>
                     <template v-slot:cell(selected)="data">
                          <b-form-select :disabled="seleccionados.length == 0" 

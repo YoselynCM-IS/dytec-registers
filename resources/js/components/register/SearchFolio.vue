@@ -31,10 +31,10 @@
                 {{ data.index + 1 }}
             </template>
             <template v-slot:cell(abono)="data">
-                ${{ data.item.abono | numeral('0,0') }}
+                ${{ data.item.abono | numeral('0,0[.]00') }}
             </template>
             <template v-slot:cell(saldo)="data">
-                ${{ data.item.saldo | numeral('0,0') }}
+                ${{ data.item.saldo | numeral('0,0[.]00') }}
             </template>
             <template v-slot:cell(occupied)="data">
                 <b-badge v-if="data.item.occupied" variant="success">

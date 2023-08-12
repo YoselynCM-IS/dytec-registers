@@ -66,7 +66,7 @@
                         </tr>
                         <tr>
                             <th class="text-right" scope="row">Total depositado</th>
-                            <td>${{ registro.total | numeral('0,0') }}</td>
+                            <td>${{ registro.total | numeral('0,0[.]00') }}</td>
                         </tr>
                         <tr v-if="registro.type !== 'transferencia'">
                             <th class="text-right" scope="row">Lugar donde se<br>realizo el pago</th>
@@ -77,8 +77,8 @@
                             <td>
                                 <label><b>Fecha:</b> {{ registro.folio.fecha }}</label><br>
                                 <label><b>Concepto:</b> {{ registro.folio.concepto }}</label><br>
-                                <label><b>Abono:</b> ${{ registro.folio.abono | numeral('0,0') }}</label><br>
-                                <label><b>Saldo:</b> ${{ registro.folio.saldo | numeral('0,0') }}</label>
+                                <label><b>Abono:</b> ${{ registro.folio.abono | numeral('0,0[.]00') }}</label><br>
+                                <label><b>Saldo:</b> ${{ registro.folio.saldo | numeral('0,0[.]00') }}</label>
                             </td>
                         </tr>
                     </tbody>
@@ -114,7 +114,7 @@
                         </tr>
                         <tr>
                             <th class="text-right" scope="row">Precio</th>
-                            <td>${{ student.price | numeral('0,0') }}</td>
+                            <td>${{ student.price | numeral('0,0[.]00') }}</td>
                         </tr>
                     </tbody>
                 </table>

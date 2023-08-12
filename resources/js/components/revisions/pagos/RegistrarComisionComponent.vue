@@ -23,11 +23,11 @@
                     <div>
                         <b-row>
                             <b-col><b>Total de los cortes</b>:</b-col>
-                            <b-col class="text-right">${{ form.total | numeral('0,0') }}</b-col>
+                            <b-col class="text-right">${{ form.total | numeral('0,0[.]00') }}</b-col>
                         </b-row>
                         <b-row>
                             <b-col><b>Total de libros</b>:</b-col>
-                            <b-col class="text-right">{{ form.total_libros | numeral('0,0') }}</b-col>
+                            <b-col class="text-right">{{ form.total_libros | numeral('0,0[.]00') }}</b-col>
                         </b-row>
                     </div>
                 </b-col>
@@ -45,7 +45,7 @@
                     </b-row>
                     <b-row>
                         <b-col><b>Total de comisión</b>:</b-col>
-                        <b-col class="text-right">${{ form.total_comision | numeral('0,0') }}</b-col>
+                        <b-col class="text-right">${{ form.total_comision | numeral('0,0[.]00') }}</b-col>
                     </b-row>
                 </b-col>
                 <b-col sm="4">

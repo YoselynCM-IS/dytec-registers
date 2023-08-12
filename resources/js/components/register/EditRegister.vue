@@ -58,12 +58,12 @@
                 </b-col>
                 <b-col sm="2">
                     <b-form-group label="Precio del libro">
-                        ${{ form.price | numeral('0,0') }}
+                        ${{ form.price | numeral('0,0[.]00') }}
                     </b-form-group>
                 </b-col>
                 <b-col sm="2">
                     <b-form-group label="Total">
-                        ${{ form.a_depositar | numeral('0,0') }}
+                        ${{ form.a_depositar | numeral('0,0[.]00') }}
                     </b-form-group>
                 </b-col>
             </b-row>
