@@ -61,7 +61,7 @@
                 </b-form-group>
                 <b-form-group label="Precio del libro">
                     <b-form-input v-model="form.price"
-                        required type="number" :disabled="load"
+                        required type="number" step="0.01" min="1" :disabled="load"
                     ></b-form-input>
                 </b-form-group>
                 <div class="text-right">
