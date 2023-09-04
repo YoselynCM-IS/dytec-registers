@@ -9,9 +9,15 @@ use App\Book;
 
 class BookController extends Controller
 {
+    public function index(){
+        $books = Book::orderBy('name', 'asc')->get();
+        return view('books.lista', compact('books'));
+    }
+
     public function store(Request $request){
         $this->validate($request, [
-            'name' => ['required', 'string', 'max:255', 'unique:books']
+            'name' => ['required', 'string', 'max:255', 'unique:books'],
+            'price' => ['required', 'numeric', 'min:1']
         ]);
 
         \DB::beginTransaction();
@@ -19,7 +25,8 @@ class BookController extends Controller
             $name = Str::of($request->name)->upper();
             $b = Book::create([
                 'name' => Str::of($name)->upper(),
-                'editorial' => $request->editorial
+                'editorial' => $request->editorial,
+                'price' => $request->price
             ]);
             \DB::commit();
         }  catch (Exception $e) {
@@ -31,11 +38,17 @@ class BookController extends Controller
     }
 
     public function update(Request $request){
+        $this->validate($request, [
+            'name' => ['required', 'string', 'max:255'],
+            'price' => ['required', 'numeric', 'min:1']
+        ]);
+        
         \DB::beginTransaction();
         try {
             Book::whereId($request->id)->update([
                 'name' => Str::of($request->name)->upper(),
-                'editorial' => $request->editorial
+                'editorial' => $request->editorial,
+                'price' => $request->price
             ]);
             \DB::commit();
         }  catch (Exception $e) {
@@ -66,7 +79,7 @@ class BookController extends Controller
     }
 
     public function show_books(Request $request){
-        $books = Book::where('name','like', '%'.$request->book.'%')->with('schools')->get();
+        $books = Book::where('name','like', '%'.$request->book.'%')->get();
         return response()->json($books);
     }
 

@@ -11,6 +11,10 @@ use App\Folio;
 
 class FolioController extends Controller
 {
+    public function index(){
+        return view('depositos.lista');
+    }
+
     // MOSTRAR TODOS LOS FOLIOS
     public function by_month(){
         $mes_actual = Carbon::now()->format('Y-m');

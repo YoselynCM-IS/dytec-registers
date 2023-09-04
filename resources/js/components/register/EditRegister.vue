@@ -43,21 +43,21 @@
             </b-row>
             <b-row>
                 <b-col>
-                    <b-form-group label="Libro:">
+                    <b-form-group label="Certificación:">
                         <b-form-select v-model="valueBook" @change="selectBook()"
                             :options="books" required :disabled="load"
                         ></b-form-select>
                     </b-form-group>
                 </b-col>
                 <b-col sm="2">
-                    <b-form-group label="Numero de piezas">
+                    <b-form-group label="Cantidad">
                         <b-form-input v-model="form.quantity" @change="setQuantity()"
                             required type="number" :disabled="load"
                         ></b-form-input>
                     </b-form-group>
                 </b-col>
                 <b-col sm="2">
-                    <b-form-group label="Precio del libro">
+                    <b-form-group label="Precio">
                         ${{ form.price | numeral('0,0[.]00') }}
                     </b-form-group>
                 </b-col>
@@ -67,9 +67,8 @@
                     </b-form-group>
                 </b-col>
             </b-row>
-            <div v-if="userid == 7 || userid == 3 || userid == 15 || userid == 17">
+            <!-- <div v-if="role == 'manager'">
                 <hr>
-                <!-- PAGOS -->
                 <b-row>
                     <b-col><h5><b>Datos del pago</b></h5></b-col>
                     <b-col class="text-right">
@@ -80,7 +79,6 @@
                 </b-row>
                 <div v-for="(comprobante, i) in form.comprobantes" v-bind:key="i">
                     <b-row>
-                        <!-- TIPO DE PAGO -->
                         <b-col>
                             <b-form-group v-if="form.school != 52"
                                 label="Tipo de pago:">
@@ -94,7 +92,6 @@
                                 </b-form-select>
                             </b-form-group>
                         </b-col>
-                        <!-- SELECCIONAR BANCO -->
                         <b-col v-if="comprobante.type == 'transferencia'">
                             <b-form-group label="Banco:" v-b-tooltip.hover title="Desde el cual se realizó el pago">
                                 <b-form-select v-model="comprobante.bank" :disabled="load"
@@ -107,7 +104,6 @@
                                 @keyup="posicion = i">
                             </b-input>
                         </b-col>
-                        <!-- FOLIO, REFERENCIA -->
                         <b-col>
                             <div v-if="comprobante.type !== 'transferencia'">
                                 <b-form-group v-if="comprobante.type == 'practicaja'" label="Folio" 
@@ -143,7 +139,6 @@
                                 </b-form-group>
                             </div>
                         </b-col>
-                        <!-- CONCEPTO, AUTORIZACIÓN -->
                         <b-col>
                             <b-form-group v-if="comprobante.type == 'practicaja' || comprobante.type == 'oxxo'" label="Autorización">
                                 <b-form-input v-model="comprobante.auto" :disabled="load"
@@ -165,7 +160,6 @@
                             </div>
                         </b-col>
                     </b-row>
-                    <!-- IMPORTE Y FECHA DE PAGO -->
                     <b-row>
                         <b-col>
                             <b-form-group label="Importe"
@@ -183,17 +177,12 @@
                         </b-col>
                     </b-row><hr>
                 </div>
+            </div> -->
+            <div class="text-right">
+                <b-button variant="success" :disabled="load" pill type="submit">
+                    <b-icon-check></b-icon-check> Guardar
+                </b-button>
             </div>
-            <b-row>
-                <b-col>
-                    
-                </b-col>
-                <b-col class="text-right">
-                    <b-button variant="success" :disabled="load" pill type="submit">
-                        <b-icon-check></b-icon-check> Guardar
-                    </b-button>
-                </b-col>
-            </b-row>
         </b-form>
     </div>
 </template>
@@ -204,7 +193,7 @@ import typesMixin from '../../mixins/typesMixin';
 import banksMixin from '../../mixins/banksMixin';
 
 export default {
-    props: ['optSchools', 'form', 'userid'],
+    props: ['optSchools', 'form', 'userid', 'role'],
     mixins: [booksMixin,typesMixin,banksMixin],
     data() {
         return {

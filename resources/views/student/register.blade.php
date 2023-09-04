@@ -11,13 +11,12 @@
             <b-card class="mb-3 mt-2">
                 <b-row>
                     <b-col><b>Requisitos</b></b-col>
-                    <b-col class="text-right"><a href="#" class="text-right">Tutorial</a></b-col>
+                    <b-col class="text-right"><a href="https://www.dropbox.com/scl/fi/t1fmjndi5vei7tiy8b59g/TUTORIAL-DyTEC.pdf?rlkey=z0omztol9i22tm8vfqpi5ed1l&dl=1" class="text-right">Tutorial</a></b-col>
                 </b-row>
                 <hr>
                 <ul>
                     <li>Acceder con el navegador Firefox o Chrome.</li>
                     <li>Un correo electrónico valido.</li>
-                    <li>Numero de orden</li>
                     <li>Tener a la mano tu comprobante de pago.</li>
                 </ul>
             </b-card>
@@ -38,19 +37,16 @@
                     </ul>
                 </div>
                 <div class="col">
-                    <h6><strong>Contacto</strong></h6>
+                    <h6><strong>Soporte</strong></h6>
                     <ul>
                         <li>
-                            <b-icon-telephone></b-icon-telephone> 56 2741 1481 <br>
-                            <a target="_blank" href="https://wa.me/525627411481">
-                                <b-icon-chat></b-icon-chat> Ir a WhatsApp
+                            <b-icon-telephone></b-icon-telephone> <b>Teléfono:</b> 55 7458 6102 <br>
+                            <a target="_blank" href="https://wa.me/5574586102">
+                                (Ir a WhatsApp)
                             </a>
                         </li>
                         <li>
-                            <b-icon-telephone></b-icon-telephone> 56 2741 0930 <br>
-                            <a target="_blank" href="https://wa.me/525627410930">
-                                <b-icon-chat></b-icon-chat> Ir a WhatsApp
-                            </a>
+                            <b-icon-envelope></b-icon-envelope> <b>Correo:</b> ditec.ventas@outlook.com
                         </li>
                     </ul>
                 </div>

@@ -13,7 +13,7 @@
                 </pagination>
             </b-col>
             <b-col>
-                <b-form-group label="Buscar por escuela:">
+                <b-form-group label="Buscar por plantel:">
                     <b-form-input v-model="school" :disabled="load" @keyup="showSchools()"
                         style="text-transform:uppercase;">
                     </b-form-input>
@@ -31,7 +31,7 @@
             <b-col sm="2" class="text-right">
                 <b-button variant="success" pill :disabled="load" block 
                     @click="newCategorie()">
-                    <b-icon-plus-circle></b-icon-plus-circle> Crear categoria
+                    <b-icon-plus-circle></b-icon-plus-circle> Crear corte
                 </b-button>
                 <b-button id="btnPre" pill @click="show_categories()"
                     :disabled="selected.length == 0 || load" block class="mt-1">
@@ -84,17 +84,17 @@
             </b-alert>
         </div>
         <b-alert v-else show variant="primary" class="text-center mt-5">
-            <b-icon-info-circle></b-icon-info-circle> Busca la escuela que deseas agregar al corte.
+            <b-icon-info-circle></b-icon-info-circle> Busca el plantel que deseas agregar a corte.
         </b-alert>
 
         <!-- MODALS -->
-        <b-modal v-model="modalNEC" title="Crear categoria" hide-footer>
+        <b-modal v-model="modalNEC" title="Crear corte" hide-footer>
             <ne-categorie-component :form="categorie" :edit="false"
                 @save_categorie="save_categorie"></ne-categorie-component>
         </b-modal>
         <b-modal v-model="modalSave" title="Mover registros" hide-footer>
             <b-form @submit.prevent="saveRevisions">
-                <b-form-group label="Categoria:">
+                <b-form-group label="Nombre del corte:">
                     <b-form-select v-model="form.categorie_id"
                         :options="categories" required
                     ></b-form-select>
@@ -119,11 +119,12 @@ export default {
             load: false,
             fields: [
                 {label: 'N.', key: 'index'},
-                {label: 'Escuela', key: 'school.name' },
-                {label: 'Alumno', key: 'name' },
-                {label: 'Libro', key: 'book' },
-                {label: 'Fecha de registro', key: 'created_at' },
-                {label: 'Revisado', key: 'selected'}
+                // {label: 'Plantel', key: 'school.name' },
+                { label: 'Nombre', key: 'name' },
+                { label: 'Correo electrónico', key: 'email' },
+                {label: 'Certificación', key: 'book' },
+                // {label: 'Fecha de registro', key: 'created_at' },
+                {label: 'Seleccionar', key: 'selected'}
             ],
             selectMode: 'multi',
             selected: [],
@@ -171,7 +172,7 @@ export default {
         // GUARDAR CATEGORIA
         save_categorie(categorie){
             this.modalNEC = false;
-            swal("OK", `La categoria se guardo correctamente.`, "success");
+            swal("OK", `El corte se guardo correctamente.`, "success");
         },
         // MOSTRAR CATEGORIAS
         show_categories(){
@@ -198,7 +199,7 @@ export default {
                 this.getResults();
                 this.load = false;
                 this.modalSave = false;
-                swal("OK", `Los registros se movieron correctamente.`, "success");
+                swal("OK", `Los registros se agregaron correctamente.`, "success");
             }).catch(error => {
                 // PENDIENTE
                 this.load = false;

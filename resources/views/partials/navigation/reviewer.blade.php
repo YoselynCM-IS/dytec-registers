@@ -1,32 +1,29 @@
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('reviewer.home') }}">{{ __('Inicio') }}</a>
+    <a class="nav-link" href="{{ route('registros.home') }}">{{ __('Registros') }}</a>
 </li>
-@if(auth()->user()->id == 7 || auth()->user()->id == 12 || auth()->user()->id == 17 || auth()->user()->id == 15 || auth()->user()->id == 22)
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('reviewer.folios') }}">{{ __('Depósitos') }}</a>
-    </li>
-@endif
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('reviewer.codes') }}">{{ __('Codigos') }}</a>
+    <a class="nav-link" href="{{ route('registros.entregas') }}">{{ __('Entregas') }}</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('folios.lista') }}">{{ __('Depósitos') }}</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('books.lista') }}">{{ __('Certificaciones') }}</a>
 </li>
 <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         Cortes
     </a>
     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+    <li><a class="dropdown-item" href="{{ route('registros.categories.lista') }}">Lista</a></li>
         <li>
-            <a class="dropdown-item" href="{{ route('reviewer.revisions') }}">{{ __('Lista') }}</a>
+            <a class="dropdown-item" href="{{ route('registros.categories.revisions') }}">{{ __('Revisión') }}</a>
         </li>
-        <li><a class="dropdown-item" href="{{ route('reviewer.categories') }}">Categorias</a></li>
-        <li><a class="dropdown-item" href="{{ route('reviewer.pagos') }}">Pagos</a></li>
     </ul>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('reviewer.schools') }}">{{ __('Escuelas') }}</a>
+    <a class="nav-link" href="{{ route('registros.schools') }}">{{ __('Escuelas') }}</a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('reviewer.books') }}">{{ __('Libros') }}</a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="{{ route('reviewer.preregister') }}">{{ __('Pre-registro') }}</a>
+    <a class="nav-link" href="{{ route('registro-pago') }}">{{ __('Registro') }}</a>
 </li>

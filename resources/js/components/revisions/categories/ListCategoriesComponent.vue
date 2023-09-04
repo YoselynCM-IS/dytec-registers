@@ -12,23 +12,23 @@
             </b-col>
             <b-col>
                 <b-row>
-                    <b-col>
-                        <pagination size="default" :limit="1" :data="registersData" 
-                            @pagination-change-page="getResults">
-                            <span slot="prev-nav">
-                                <b-icon-chevron-left></b-icon-chevron-left>
-                            </span>
-                            <span slot="next-nav">
-                                <b-icon-chevron-right></b-icon-chevron-right>
-                            </span>
-                        </pagination>
-                        <b-button v-if="registersData.data" variant="dark" pill
-                            :href="`/revisions/download_categorie/${categorie_id}`">
-                            <b-icon-download></b-icon-download> Descargar
+                    <b-col sm="3">
+                        <b-button variant="warning" pill size="sm" :disabled="categorie_id == null"
+                            @click="editCorte()">
+                            <i class="fa fa-pencil"></i>
+                        </b-button>
+                        <b-button v-if="role == 'manager'"
+                            :disabled="categorie_id == null || registersData.total > 0"
+                            variant="danger" pill size="sm" @click="deleteCorte()">
+                            <i class="fa fa-close"></i>
+                        </b-button>
+                        <b-button v-if="role == 'manager'" :disabled="categorie_id == null"
+                            variant="dark" pill size="sm" @click="archivarCorte()">
+                            <i class="fa fa-archive"></i>
                         </b-button>
                     </b-col>
-                    <b-col sm="4" class="text-right">
-                        <b-form-group label="Buscar alumno:">
+                    <b-col sm="4">
+                        <b-form-group label="Buscar registro:">
                             <b-form-input v-model="sStudent" :disabled="load || !registersData.data" 
                                 @keyup="showStudents(categorie_id)"
                                 style="text-transform:uppercase;">
@@ -44,20 +44,20 @@
                             </div>
                         </b-form-group>
                     </b-col>
-                    <b-col sm="3" class="text-right">
-                        <b-button variant="warning" pill size="sm" :disabled="categorie_id == null"
-                            @click="editCorte()">
-                            <i class="fa fa-pencil"></i>
-                        </b-button>
-                        <b-button v-if="role == 'manager'"
-                            :disabled="categorie_id == null || registersData.total > 0"
-                            variant="danger" pill size="sm" @click="deleteCorte()">
-                            <i class="fa fa-close"></i>
-                        </b-button>
-                        <b-button v-if="role == 'manager'" :disabled="categorie_id == null"
-                            variant="dark" pill size="sm" @click="archivarCorte()">
-                            <i class="fa fa-archive"></i>
-                        </b-button>
+                    <b-col>
+                        <pagination size="default" :limit="1" :data="registersData" 
+                            @pagination-change-page="getResults">
+                            <span slot="prev-nav">
+                                <b-icon-chevron-left></b-icon-chevron-left>
+                            </span>
+                            <span slot="next-nav">
+                                <b-icon-chevron-right></b-icon-chevron-right>
+                            </span>
+                        </pagination>
+                        <!-- <b-button v-if="registersData.data" variant="dark" pill
+                        :href="`/revisions/download_categorie/${categorie_id}`">
+                        <b-icon-download></b-icon-download> Descargar
+                    </b-button> -->
                     </b-col>
                 </b-row>
                 <div v-if="!load">
@@ -77,7 +77,7 @@
                         </template>
                     </b-table>
                     <b-alert show variant="secondary" v-else class="text-center">
-                        Presiona sobre la categoría para ver los registros.
+                        Presiona sobre el corte para ver los registros.
                     </b-alert>
                 </div>
                 <load-component v-else></load-component>
@@ -90,7 +90,7 @@
             <information-student :student="student"></information-student>
         </b-modal>
         <!-- EDITAR CORTE -->
-        <b-modal v-model="modalNEC" title="Editar categoria" hide-footer>
+        <b-modal v-model="modalNEC" title="Editar corte" hide-footer>
             <ne-categorie-component :form="form" :edit="true"
                 @save_categorie="save_categorie"></ne-categorie-component>
         </b-modal>
@@ -109,10 +109,10 @@ export default {
             registersData: {},
             fields: [
                 { label: 'N.', key: 'index' },
-                { label: 'Escuela', key: 'school.name' },
-                { label: 'Alumno', key: 'name' },
-                { label: 'Libro', key: 'book' },
-                { label: 'Fecha de registro', key: 'created_at' },
+                // { label: 'Escuela', key: 'school.name' },
+                { label: 'Nombre', key: 'name' },
+                { label: 'Certificación', key: 'book' },
+                { label: 'Correo electrónico', key: 'email' },
                 { label: 'Información', key: 'information' },
             ],
             student: {},
@@ -214,7 +214,7 @@ export default {
         save_categorie(){
             this.categories[this.position].categorie = this.form.categorie;
             this.modalNEC = false;
-            swal("Guardado", "La categoría se actualizo correctamente", "success");
+            swal("Guardado", "El corte se actualizo correctamente", "success");
         },
         // ELIMINAR CORTE
         deleteCorte(){

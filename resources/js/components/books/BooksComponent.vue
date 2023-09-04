@@ -9,13 +9,13 @@
             <b-col>
                 <b-form-group>
                     <b-form-input v-model="book_name" @keyup="showBooks()"
-                        style="text-transform:uppercase;" placeholder="Buscar libro">
+                        style="text-transform:uppercase;" placeholder="Buscar certificación">
                     </b-form-input>
                 </b-form-group>
             </b-col>
             <b-col sm="3" class="text-right">
                 <b-button pill id="btnPre" @click="newBook()">
-                     <b-icon-plus-circle></b-icon-plus-circle> Agregar libro
+                     <b-icon-plus-circle></b-icon-plus-circle> Agregar
                 </b-button>
             </b-col>
         </b-row>
@@ -45,28 +45,32 @@
                     <b-icon-info-circle-fill></b-icon-info-circle-fill>
                 </b-button>
             </template>
+            <template v-slot:cell(price)="data">
+                ${{ data.item.price | numeral('0,0[.]00') }}
+            </template>
         </b-table>
 
         <!-- MODALS -->
-        <b-modal ref="modal-book" hide-footer title="">
+        <b-modal ref="modal-book" hide-footer hide-header>
+            <h5><b>{{ edit ? 'Editar' : 'Agregar' }} certificación</b></h5><hr>
             <new-edit-book :book="book" :edit="edit" @updateBooks="updateBooks">
             </new-edit-book>
         </b-modal>
         <b-modal ref="modal-assign" hide-footer :title="book_name">
             <b-form @submit.prevent="saveAssign">
-                <b-form-group label="Plantel:">
+                <b-form-group label="Certificadora:">
                     <b-form-select v-model="form.school_id"
                         :options="schools" required :disabled="load"
                     ></b-form-select>
                 </b-form-group>
-                <b-form-group label="Precio del libro">
+                <b-form-group label="Precio">
                     <b-form-input v-model="form.price"
                         required type="number" step="0.01" min="1" :disabled="load"
                     ></b-form-input>
                 </b-form-group>
                 <div class="text-right">
                     <b-button pill :disabled="load" id="btnPre" type="submit">
-                        <b-icon-plus-circle></b-icon-plus-circle> Guardar
+                        <b-icon-check></b-icon-check> Guardar
                     </b-button>
                 </div>
             </b-form>
@@ -80,12 +84,12 @@
                             <label>{{ eBook.name }}</label>
                         </b-col>
                         <b-col sm="4">
-                            <b-input type="number" v-model="eBook.price"></b-input>
+                            <b-input type="number" step="0.01" min="1" v-model="eBook.price"></b-input>
                         </b-col>
                     </b-row>
                     <div class="text-right mt-1">
                         <b-button pill :disabled="load" id="btnPre" type="submit">
-                            <b-icon-plus-circle></b-icon-plus-circle> Guardar
+                            <b-icon-check></b-icon-check> Guardar
                         </b-button>
                     </div>
                 </b-form>
@@ -111,7 +115,7 @@
                 </template>
             </b-table>
             <b-alert v-else show variant="dark" class="text-center">
-                <b-icon-info-circle></b-icon-info-circle> No se han asignado escuelas
+                <b-icon-info-circle></b-icon-info-circle> Sin registro
             </b-alert>
         </b-modal>
     </div>
@@ -129,11 +133,12 @@ export default {
             perPage: 25,
             fields: [
                 {key:'index', label:'N.'},
-                {key:'name', label:'Libro'},
-                {key:'editorial', label:'Editorial'},
+                {key:'name', label:'Certificación'},
+                { key: 'editorial', label: 'Certificadora' },
+                { key: 'price', label: 'Precio' },
                 {key:'actions', label:'Editar / Eliminar'},
-                {key:'show', label:'Escuelas'},
-                {key:'assign', label:'Asignar escuela'}
+                // {key:'show', label:'Certificadora'},
+                // {key:'assign', label:'Asignar precio'}
             ],
             book: { id: null, name: '', editorial: null },
             edit: false,
@@ -143,7 +148,7 @@ export default {
             form: { book_id: null, school_id: null, price: null },
             fieldsS: [
                 {key:'index', label:'N.'},
-                {key:'name', label:'Plantel'},
+                {key:'name', label:'Certificadora'},
                 {key:'price', label:'Precio'},
                 {key:'edit', label:'Editar'},
             ],
@@ -159,12 +164,12 @@ export default {
             this.dismissCountDown = dismissCountDown
         },
         newBook(){
-            this.book = { id: null, name: '', editorial: null };
+            this.book = { id: null, name: '', editorial: null, price: 0 };
             this.edit = false;
             this.$refs['modal-book'].show();
         },
         editBook(position, book){
-            this.book = { id: book.id, name: book.name, editorial: book.editorial };
+            this.book = { id: book.id, name: book.name, editorial: book.editorial, price: book.price };
             this.position = position;
             this.edit = true;
             this.$refs['modal-book'].show();
@@ -172,12 +177,13 @@ export default {
         updateBooks(book){
             if(!this.edit){
                 this.books.unshift(book);
-                swal("Guardado", "El libro se guardo correctamente.", "success");
+                swal("Guardado", "La certificación se guardo correctamente.", "success");
             } else {
                 this.books[this.position].name = book.name;
                 this.books[this.position].editorial = book.editorial;
+                this.books[this.position].price = book.price;
                 this.$refs.table.refresh();
-                swal("Actualizado", "El libro se actualizo correctamente.", "success");
+                swal("Actualizado", "La certificación se actualizo correctamente.", "success");
             }
             this.$refs['modal-book'].hide();
         },
@@ -211,11 +217,11 @@ export default {
                 this.form = { book_id: null, school_id: null, price: null };
                 this.load = false;
                 this.$refs['modal-assign'].hide();
-                swal("Guardado", "El libro se asignó correctamente.", "success");
+                swal("Guardado", "La certificación se asignó correctamente.", "success");
             }).catch(error => {
                 // PENDIENTE
                 this.load = false;
-                swal("Ocurrió un problema", "Ocurrió un problema al asignar el libro, por favor verifica tu conexión a internet e intenta de nuevo. Si el error persiste refresca la pagina y vuelve acceder al sistema.", "warning");
+                swal("Ocurrió un problema", "Ocurrió un problema al asignar la certificación, por favor verifica tu conexión a internet e intenta de nuevo. Si el error persiste refresca la pagina y vuelve acceder al sistema.", "warning");
             });
         },
         showSchools(book){
@@ -242,11 +248,11 @@ export default {
             axios.delete('/books/delete', {params: {book_id: book.id}}).then(response => {
                 this.books.splice(position, 1);
                 this.load = false;
-                swal("Eliminado", "El libro se elimino correctamente.", "success");
+                swal("Eliminado", "La certificación se elimino correctamente.", "success");
             }).catch(error => {
                 // PENDIENTE
                 this.load = false;
-                swal("Ocurrió un problema", "Ocurrió un problema al eliminar el libro, por favor verifica tu conexión a internet e intenta de nuevo. Si el error persiste refresca la pagina y vuelve acceder al sistema.", "warning");
+                swal("Ocurrió un problema", "Ocurrió un problema al eliminar la certificación, por favor verifica tu conexión a internet e intenta de nuevo. Si el error persiste refresca la pagina y vuelve acceder al sistema.", "warning");
             });
         },
         savePrice(){
@@ -263,7 +269,7 @@ export default {
             });
         },
         showBooks(){
-            axios.get('/books/show_books', {params: {book: this.book_name}}).then(response => {
+            axios.get('/show_books', {params: {book: this.book_name}}).then(response => {
                 this.books = response.data;
             }).catch(error => {
                 // PENDIENTE

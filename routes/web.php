@@ -17,16 +17,13 @@ Route::prefix('dtec-admin')->group(function() {
   Auth::routes();
 });
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/registro-pago', 'StudentController@register' )->name('registro-pago');
+Route::post('/save_register', 'StudentController@store')->name('save_register');
+Route::get('/show_books', 'BookController@show_books' )->name('show_books');
 
-Route::name('files.')->prefix('files')->group(function () {
-    Route::post('save_file', 'FileController@store')->name('save_file');
-    Route::get('download_file/{id}', 'FileController@download' )->name('download_file');
-});
-
-Route::name('folios.')->prefix('folios')->group(function () {
+Route::name('folios.')->prefix('folios')->middleware(['auth'])->group(function () {
+    Route::get('lista', 'FolioController@index' )->name('lista');
     Route::get('by_month', 'FolioController@by_month')->name('by_month');
-
     Route::get('search_folios', 'FolioController@search_folios')->name('search_folios');
     Route::post('get_folio', 'FolioController@get_folio')->name('get_folio');
     Route::post('load_folios', 'FolioController@store')->name('load_folios');
@@ -38,14 +35,10 @@ Route::name('folios.')->prefix('folios')->group(function () {
     Route::put('marcar_ocupado', 'FolioController@marcar_ocupado')->name('marcar_ocupado');
 });
 
-Route::get('/registro-pago', 'StudentController@register' )->name('registro-pago');
-
-Route::name('student.')->prefix('student')->group(function () {
+Route::name('student.')->prefix('student')->middleware(['auth'])->group(function () {
     Route::get('/show_registers', 'StudentController@show_registers' )->name('show_registers');
     Route::get('books_to_email', 'StudentController@books_to_email' )->name('books_to_email');
 
-    // Route::post('save_student', 'StudentController@store')->name('save_student');
-    Route::post('preregister', 'StudentController@store')->name('preregister');
     Route::get('/consult_data/{date}/{id}', 'StudentController@consult_data' )->name('consult_data');
     Route::get('/download_emails/{school}/{book}', 'StudentController@download_emails' )->name('download_emails');
     Route::get('/download_all/{school}', 'StudentController@download_all' )->name('download_all');
@@ -79,7 +72,7 @@ Route::name('student.')->prefix('student')->group(function () {
     Route::get('/by_school_ne', 'StudentController@by_school_ne' )->name('by_school_ne');
 });
 
-Route::name('schools.')->prefix('schools')->group(function () {
+Route::name('schools.')->prefix('schools')->middleware(['auth'])->group(function () {
     Route::get('index', 'SchoolController@index' )->name('index');
     Route::get('schools_to_email', 'SchoolController@schools_to_email' )->name('schools_to_email');
     Route::get('show_schools', 'SchoolController@show_schools' )->name('show_schools');
@@ -96,7 +89,14 @@ Route::name('schools.')->prefix('schools')->group(function () {
     
 });
 
-Route::name('registros.')->prefix('registros')->group(function () {
+Route::name('registros.')->prefix('registros')->middleware(['auth'])->group(function () {
+        Route::get('home', 'RegistroController@index' )->name('home');
+        Route::get('entregas', 'RegistroController@entregas' )->name('entregas');
+        Route::name('categories.')->prefix('categories')->group(function () {
+            Route::get('/revisions', 'RegistroController@revisions' )->name('revisions');
+            Route::get('/lista', 'RegistroController@categories' )->name('lista');
+        });
+        Route::get('schools', 'RegistroController@schools' )->name('schools');
     Route::get('by_date', 'RegistroController@by_date' )->name('by_date');
     Route::get('by_type', 'RegistroController@by_type' )->name('by_type');
     Route::get('by_folio', 'RegistroController@by_folio' )->name('by_folio');
@@ -117,64 +117,18 @@ Route::name('registros.')->prefix('registros')->group(function () {
     Route::get('by_day/{fecha1}/{fecha2}', 'RegistroController@by_day' )->name('by_day');
 });
 
-Route::name('administrator.')->prefix('administrator')
-->middleware(['auth', 'role:administrator'])->group(function () {
-    Route::get('/movimientos', 'AdministratorController@movimientos' )->name('movimientos');
-    Route::get('/folios', 'AdministratorController@folios' )->name('folios');
-    Route::get('/home', 'AdministratorController@home' )->name('home');
-});
-
-Route::name('manager.')->prefix('manager')
-->middleware(['auth', 'role:manager'])->group(function () {
-    Route::get('/folios', 'ManagerController@folios' )->name('folios');
-    Route::get('/files', 'ManagerController@files' )->name('files');
-    Route::get('/home', 'ManagerController@home' )->name('home');
-    Route::get('/movimientos', 'ManagerController@movimientos' )->name('movimientos');
-    Route::get('/books', 'ManagerController@books' )->name('books');
-    Route::get('/codes', 'ManagerController@codes' )->name('codes');
-    Route::get('/schools', 'ManagerController@schools' )->name('schools');
-    Route::name('categories.')->prefix('categories')->group(function () {
-        Route::get('/revisions', 'ManagerController@revisions' )->name('revisions');
-        Route::get('/lista', 'ManagerController@categories' )->name('lista');
-        Route::get('/pagos', 'ManagerController@pagos' )->name('pagos');
-    });
-});
-
-Route::name('reviewer.')->prefix('reviewer')
-->middleware(['auth', 'role:reviewer'])->group(function () {
-    Route::get('/home', 'ReviewerController@home' )->name('home');
-    Route::get('/codes', 'ReviewerController@codes' )->name('codes');
-    Route::get('/schools', 'ReviewerController@schools' )->name('schools');
-    Route::get('/books', 'ReviewerController@books' )->name('books');
-    Route::get('/folios', 'ReviewerController@folios' )->name('folios');
-    Route::get('/revisions', 'ReviewerController@revisions' )->name('revisions');
-    Route::get('/preregister', 'ReviewerController@preregister' )->name('preregister');
-    Route::get('/categories', 'ReviewerController@categories' )->name('categories');
-    Route::get('/pagos', 'ReviewerController@pagos' )->name('pagos');
-});
-
-Route::name('books.')->prefix('books')->group(function () {
+Route::name('books.')->prefix('books')->middleware(['auth'])->group(function () {
+    Route::get('lista', 'BookController@index' )->name('lista')->middleware(['auth']);
     Route::post('new_book', 'BookController@store')->name('new_book');
     Route::put('update_book', 'BookController@update')->name('update_book');
     Route::post('assign_book', 'BookController@assign_book')->name('assign_book');
     Route::get('get_schools', 'BookController@get_schools' )->name('get_schools');
-    Route::get('show_books', 'BookController@show_books' )->name('show_books');
     Route::put('update_price', 'BookController@update_price')->name('update_price');
     Route::get('get_editoriales', 'BookController@get_editoriales' )->name('get_editoriales');
     Route::delete('delete', 'BookController@delete')->name('delete');
 });
 
-Route::name('capturist.')->prefix('capturist')
-->middleware(['auth', 'role:capturist'])->group(function () {
-    Route::get('home', 'CapturistController@home' )->name('home');
-});
-
-Route::name('movimientos.')->prefix('movimientos')->group(function () {
-    Route::get('by_month', 'MovimientoController@by_month' )->name('by_month');
-    Route::get('down_by_month/{month}/{status}', 'MovimientoController@down_by_month' )->name('down_by_month');
-});
-
-Route::name('revisions.')->prefix('revisions')->group(function () {
+Route::name('revisions.')->prefix('revisions')->middleware(['auth'])->group(function () {
     Route::get('index', 'RevisionController@index' )->name('index');
     Route::get('show', 'RevisionController@show' )->name('show');
     Route::put('save', 'RevisionController@save' )->name('save');
@@ -201,6 +155,3 @@ Route::name('revisions.')->prefix('revisions')->group(function () {
     
 });
 
-Route::name('information.')->prefix('information')->group(function () {
-    Route::put('/send_error', 'StudentController@send_error' )->name('send_error');
-});

@@ -18,7 +18,7 @@
         <h5><b>Datos del alumno</b></h5>
         <ul type="none">
             <li><b>Nombre:</b> {{ student.name }}</li>
-            <li><b>Correo electronico:</b> {{ student.email }}</li>
+            <li><b>Correo electrónico:</b> {{ student.email }}</li>
             <li><b>Escuela:</b> {{ student.school.name }}</li>
         </ul>
         <hr>

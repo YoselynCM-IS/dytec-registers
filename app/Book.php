@@ -7,9 +7,9 @@ use App\School;
 
 class Book extends Model
 {
-    protected $fillable = [ 'id', 'name', 'editorial' ];
+    protected $fillable = [ 'id', 'name', 'editorial', 'price' ];
     
-    public function schools(){
-        return $this->belongsToMany(School::class)->withPivot('price');
-    }
+    // public function schools(){
+    //     return $this->belongsToMany(School::class)->withPivot('price');
+    // }
 }

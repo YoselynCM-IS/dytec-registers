@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-form @submit.prevent="onSubmit">
-            <b-form-group label="Nombre de la categoria:">
+            <b-form-group label="Nombre del corte:">
                 <b-form-input v-model="form.categorie" required :disabled="load"
                     style="text-transform:uppercase;">
                 </b-form-input>

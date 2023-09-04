@@ -13,11 +13,38 @@ use App\Mail\PreRegister;
 use Carbon\Carbon;
 use App\Registro;
 use App\Student;
+use App\School;
 use App\Folio;
 use Excel;
 
 class RegistroController extends Controller
 {
+
+    public function index(){
+        $students = Student::with('school')->withCount('registros')->orderBy('created_at', 'desc')->get();
+        return view('registros.home', compact('students'));
+    }
+
+    public function entregas(){
+        $students = Student::where('check', 'accepted')->with('school')
+                        ->orderBy('created_at', 'desc')->get();
+        
+        return view('registros.entregas', compact('students'));
+    }
+
+    public function revisions(){
+        return view('registros.revisiones.revisions');
+    }
+
+    public function categories(){
+        return view('registros.revisiones.categories');
+    }
+
+    public function schools(){
+        $schools = School::withCount(['students'])->orderBy('name', 'asc')->get();
+        return view('registros.schools', compact('schools'));
+    }
+
     public function by_date(Request $request){
         $registros = Registro::select('student_id')->where('date', 'like', '%'.$request->fecha.'%')->groupBy('student_id')->get();
         $students = Student::whereIn('id',$registros)->with('school')->orderBy('book', 'asc')->get();
@@ -37,7 +64,7 @@ class RegistroController extends Controller
     }
 
     public function by_total(Request $request){
-        $registros = Registro::select('student_id')->where('total', $request->total)->groupBy('student_id')->get();
+        $registros = Registro::select('student_id')->where('total', (double)$request->total)->groupBy('student_id')->get();
         $students = Student::whereIn('id',$registros)->with('school')->orderBy('created_at', 'desc')->get();
         return response()->json($students);
     }
@@ -91,7 +118,7 @@ class RegistroController extends Controller
                     }
                     $student->update(['check' => 'accepted', 'validate' => 'NO ENVIADO']);
 
-                    $message = 'Tu registro se ha completado. Los datos que ingresaste en tu pre-registro han sido verificados correctamente.';
+                    $message = '';
                     array_push($estudiantes, ['student' => $student, 'message' => $message]);
                 } else {
                     $count_process = Registro::where('student_id', $student->id)
@@ -117,9 +144,8 @@ class RegistroController extends Controller
             }
         }
         
-        $hoy = Carbon::now()->format('Y-m-d');
-        $students = Student::where('created_at', 'like', '%'.$hoy.'%')->with('school')->orderBy('created_at', 'desc')->get();
-
+        $students = Student::with('school')->withCount('registros')->orderBy('created_at', 'desc')->get();
+        
         return response()->json($students);
     }
 
@@ -127,96 +153,37 @@ class RegistroController extends Controller
         $folio = null;
         // PRACTICAJA
         if($registro->type === 'practicaja'){
-            $fpart1 = Folio::where('concepto','like','%DEPOSITO EFECTIVO PRACTIC%')
-                    ->where('fecha',$registro->date)
+            // PENDIENTE, COMPLETAR INFORMACIÓN CON EL ESTADO DE CUENTA
+            $folio = Folio::where('fecha',$registro->date)
+                    ->where('concepto','like','%DEPOSITO EFECTIVO PRACTIC%')
                     ->where('concepto','like','%FOLIO:'.$registro->invoice.'%')
                     ->where('abono','like','%'.$registro->total.'%')
-                    ->where('occupied', 0);
-            if($registro->student->numcuenta == '0189525114'){
-                $folio = $fpart1->where('concepto','like','%**5114%')->first();
-            } else {
-                $folio = $fpart1->where('concepto','like','%**7206%')->first();
-            }
+                    ->where('occupied', 0)->first();
         }
         // VENTANILLA
         if($registro->type === 'ventanilla'){
             $invoice = ltrim($registro->invoice,0);
+            $auto = ltrim($registro->auto,0);
 
-            $fpart1 = Folio::where('fecha',$registro->date)
-                    ->where('abono','like','%'.$registro->total.'%')
-                    ->where('occupied', 0);
-
-            if($registro->student->numcuenta == '0189525114'){
-                $auto = ltrim($registro->auto,0);
-                if(strlen($invoice) > 3 && strlen($auto) > 3){
-                    $folio = $fpart1->where('concepto','like','%DEPOSITO EN EFECTIVO/000'.$invoice.''.$auto.'%')->first();
-                }
-            } else {
-                if(strlen($invoice) > 3){
-                    // if($registro->invoice !== 'deposito' && $registro->invoice !== 'deposito en efectivo'){
-                        $folio = $fpart1->where('concepto','like','%DEPOSITO EN EFECTIVO/0'.$invoice.'%')->first();
-                        // ->where(function($query){
-                        //     $query->where('concepto','like','%DEPOSITO EN EFECTIVO/0%')
-                        //             ->orWhere('concepto','like','%DEPOSITO POR CORRECCION/%');
-                        // })
-                    // }
-                }
+            if(strlen($invoice) > 3 && strlen($auto) > 3){
+                $folio = Folio::where('fecha',$registro->date)
+                        ->where('concepto','like','%DEPOSITO EN EFECTIVO/000'.$invoice.''.$auto.'%')
+                        ->where('abono','like','%'.$registro->total.'%')
+                        ->where('occupied', 0)
+                        ->first();
             }
         }
         // TRANFERENCIA
         if($registro->type === 'transferencia'){
-            $bank = $registro->bank;
-            // BANCOMER
-            if($bank === 'BANCOMER') {
-                $folio = Folio::where('fecha',$registro->date)
-                    ->where(function($query){
-                        $query->where('concepto','like','%PAGO CUENTA DE TERCERO%')
-                                ->orWhere('concepto','like','%TRASPASO ENTRE CUENTAS%');
-                    })
-                    ->where('concepto','like','%'.$registro->invoice.'%')
-                    ->where('abono','like','%'.$registro->total.'%')
-                    ->where('occupied', 0)
-                    ->first();
-            } else { // LOS DEMAS INCLUSO OTROS
-                if($this->banks_equal($bank)){
-                    $folio = $this->search_folio($bank, $registro);
-                }
-                if($this->banks_not_equal($bank)){
-                    $invoice = $registro->invoice;
-                    $auto = substr($registro->auto,0,15);
-
-                    $folio = Folio::where('concepto','NOT LIKE','%DEPOSITO EFECTIVO PRACTIC%')
-                                ->where('concepto','NOT LIKE','%DEPOSITO EN EFECTIVO/0%')
-                                ->where('concepto','NOT LIKE','%DEPOSITO POR CORRECCION/%')
-                                ->where('concepto','NOT LIKE','%PAGO CUENTA DE TERCERO%')
-                                ->where('concepto','NOT LIKE','%BANAMEX%')->where('concepto','NOT LIKE','%AZTECA%')
-                                ->where('concepto','NOT LIKE','%BANCOPPEL%')->where('concepto','NOT LIKE','%BAJIO%')
-                                ->where('concepto','NOT LIKE','%BANORTE%')->where('concepto','NOT LIKE','%BANREGIO%')
-                                ->where('concepto','NOT LIKE','%CAJA POP MEX%')->where('concepto','NOT LIKE','%COMPARTAMOS%')
-                                ->where('concepto','NOT LIKE','%HSBC%')->where('concepto','NOT LIKE','%INBURSA%')
-                                ->where('concepto','NOT LIKE','%SANTANDER%')->where('concepto','NOT LIKE','%SCOTIABANK%')
-                                ->where('fecha',$registro->date)
-                                ->where(function($query) use ($invoice, $auto){
-                                    $query->where('concepto','like','%'.$invoice.'%')
-                                        ->orWhere('concepto','like','%'.$auto.'%');
-                                })
-                                ->where('abono','like','%'.$registro->total.'%')
-                                ->where('occupied', 0)
-                                ->first();
-                }
-            }
-        }
-        // BANCO AZTECA
-        if($registro->type === 'BANCO AZTECA'){
-            // $folio = Folio::where('fecha',$registro->date)
-            //     ->where('abono','like','%'.$registro->total.'%')
-            //     ->where('occupied', 0)
-            //     ->where('concepto','like','%DEPOSITO DE EFECTIVO/'.$registro->auto.'%')
-            //     // ->where(function($query){
-            //     //     $query->where('concepto','like','%DEPOSITO EN EFECTIVO/%')
-            //     //             ->orWhere('concepto','like','%DEPOSITO DE EFECTIVO/%');
-            //     // })
-            //     ->first();
+            $folio = Folio::where('fecha',$registro->date)
+                        ->where(function($query){
+                            $query->where('concepto','like','%PAGO CUENTA DE TERCERO%')
+                                    ->orWhere('concepto','like','%TRASPASO ENTRE CUENTAS%');
+                        })
+                        ->where('concepto','like','%'.$registro->invoice.'%')
+                        ->where('abono','like','%'.$registro->total.'%')
+                        ->where('occupied', 0)
+                        ->first();
         }
         return $folio;
     }
@@ -310,7 +277,7 @@ class RegistroController extends Controller
                     }
                     $student->update(['check' => 'accepted', 'validate' => 'NO ENVIADO']);
 
-                    $message = 'Tu registro se ha completado. Los datos que ingresaste en tu pre-registro han sido verificados correctamente.';
+                    $message = '';
 
                     array_push($estudiantes, ['student' => $student, 'message' => $message]);
                 } else {
@@ -318,7 +285,7 @@ class RegistroController extends Controller
                             ->where('status', 'process')->count();
                     if($count_process === 0){
                         $student->update(['check' => 'rejected']);
-                        $message = 'Tu pre-registro no pudo ser aceptado, te pedimos verifiques tus datos y vuelvas a registrarte ingresando correctamente tus datos.';
+                        $message = '';
                         // Puedes consultar tus datos ingresando al siguiente link (Solo estará disponible por 3 días).
                         if($student->validate == 'NO ENVIADO' && $student->school_id != 76){
                             array_push($estudiantes, ['student' => $student, 'message' => $message]);
@@ -361,17 +328,11 @@ class RegistroController extends Controller
     public function resend_mail(Request $request){
         $student = Student::find($request->id);
 
-        $message = 'Tu registro se ha completado. Los datos que ingresaste en tu pre-registro han sido verificados correctamente.';
-
+        $message = '';
         Mail::to($student->email)->send(new PreRegister($message, $student));
         $student->update(['validate' => 'ENVIADO']);
 
-        $hoy = Carbon::now()->format('Y-m-d');
-        $students = Student::where('check', 'accepted')
-                    ->where('created_at', 'like', '%'.$hoy.'%')
-                    ->with('school')->orderBy('created_at', 'desc')->get();
-
-        return response()->json($students);
+        return response()->json();
     }
 
     public function by_bank(Request $request){

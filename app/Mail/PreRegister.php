@@ -31,9 +31,10 @@ class PreRegister extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        return $this->from('registro.pagos@majesticeducation-registers.com')
-            ->cc("rp.majesticeducacion@gmail.com")
-            ->subject(__("Respuesta de pre-registro"))
+        // PENDIENTE EL CORREO DE ENVIO
+        return $this->from('registro.pago@digitaltecenglishcenter.com')
+            ->cc("dytec.pagos@gmail.com")
+            ->subject(__("Registro de comprobante de pago"))
             ->markdown('mails.save-pre-register') //Template
             ->with('student', $this->student)
             ->with('message', $this->message);

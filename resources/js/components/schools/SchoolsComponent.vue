@@ -7,13 +7,13 @@
                 </b-pagination>
             </b-col>
             <b-col sm="3" class="text-right">
-                <b-button variant="dark" pill href="/schools/download_relation">
+                <!-- <b-button variant="dark" pill href="/schools/download_relation">
                     <b-icon-download></b-icon-download> Relación Libros
-                </b-button>
+                </b-button> -->
             </b-col>
             <b-col sm="3" class="text-right">
                 <b-button pill id="btnPre" @click="newSchool()">
-                    <b-icon-plus-circle></b-icon-plus-circle> Agregar escuela
+                    <b-icon-plus-circle></b-icon-plus-circle> Agregar
                 </b-button>
             </b-col>
         </b-row>
@@ -41,7 +41,8 @@
         </b-table>
 
         <!-- MODAL -->
-        <b-modal ref="my-modal" hide-footer title="">
+        <b-modal ref="my-modal" hide-footer hide-header>
+            <h5><b>{{ edit ? 'Editar' : 'Agregar' }} escuela</b></h5><hr>
             <new-edit-school :school="school" :edit="edit" @updateSchools="updateSchools">
             </new-edit-school>
         </b-modal>
@@ -50,7 +51,7 @@
                 :show="dismissCountDown" dismissible variant="success"
                 @dismissed="dismissCountDown=0"
                 @dismiss-count-down="countDownChanged">
-                <b-icon-check></b-icon-check> El libro ha sido eliminado
+                <b-icon-check></b-icon-check> La certificación ha sido eliminada
             </b-alert>
             <b-table v-if="books.length > 0" :items="books" :fields="fieldsB">
                 <template v-slot:cell(index)="data">
@@ -67,7 +68,7 @@
                 </template>
             </b-table>
             <b-alert v-else show variant="dark" class="text-center">
-                <b-icon-info-circle></b-icon-info-circle> No se han asignado libros
+                <b-icon-info-circle></b-icon-info-circle> No se han asignado certificaciones
             </b-alert>
         </b-modal>
     </div>
@@ -86,7 +87,7 @@ export default {
             fields: [
                 {key:'index', label:'N.'},
                 {key:'name', label:'Escuela'},
-                {key:'show', label:'Libros'},
+                // {key:'show', label:'Certificaciones'},
                 {key:'actions', label:'Editar / Eliminar'}
             ],
             school: { id: null, name: '' },
@@ -95,7 +96,7 @@ export default {
             books: [],
             fieldsB: [
                 {key:'index', label:'N.'},
-                {key:'name', label:'Libro'},
+                {key:'name', label:'Certificación'},
                 {key:'price', label:'Precio'},
                 {key:'remove', label:'Quitar'},
             ],
@@ -162,7 +163,7 @@ export default {
             }).catch(error => {
                 // PENDIENTE
                 this.load = false;
-                swal("Ocurrió un problema", "Ocurrió un problema al eliminar el libro, por favor verifica tu conexión a internet e intenta de nuevo. Si el error persiste refresca la pagina y vuelve acceder al sistema.", "warning");
+                swal("Ocurrió un problema", "Ocurrió un problema al eliminar la certificación, por favor verifica tu conexión a internet e intenta de nuevo. Si el error persiste refresca la pagina y vuelve acceder al sistema.", "warning");
             });
         }
     }

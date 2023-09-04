@@ -64,9 +64,6 @@ Vue.component('pagination', require('laravel-vue-pagination'));
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-// COMPONENTES DE VAUCHERS
-Vue.component('vouchers-component', require('./components/vouchers/VouchersComponent.vue').default);
-
 // COMPONENTES PARA EL REGISTRO
 Vue.component('edit-register', require('./components/register/EditRegister.vue').default);
 
@@ -82,10 +79,6 @@ Vue.component('consult-register-component', require('./components/register/Consu
 
 // COMPONENTES PARA LOS CODIGOS
 Vue.component('codes-component', require('./components/codes/CodesComponent.vue').default);
-
-// COMPONENTES PARA SUBIR FOLIOS A LA BASE DE DATOS
-Vue.component('files-component', require('./components/manager/FilesComponent.vue').default);
-
 
 Vue.component('folios-component', require('./components/FoliosComponent.vue').default);
 
@@ -105,7 +98,6 @@ Vue.component('movimientos-component', require('./components/movimientos/Movimie
 Vue.component('revisions-component', require('./components/revisions/RevisionsComponent.vue').default);
 Vue.component('ne-categorie-component', require('./components/revisions/categories/NECategorieComponent.vue').default);
 Vue.component('rev-list-categories-component', require('./components/revisions/categories/ListCategoriesComponent.vue').default);
-Vue.component('pagos-categories-component', require('./components/revisions/pagos/PagosComponent.vue').default);
 
 
 /**

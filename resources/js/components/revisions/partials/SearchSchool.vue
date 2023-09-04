@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-form-input v-model="school" :disabled="load" @keyup="showSchools()"
-            style="text-transform:uppercase;" placeholder="Buscar escuela">
+            style="text-transform:uppercase;" placeholder="Buscar plantel">
         </b-form-input>
         <div class="list-group" v-if="schools.length" id="listR">
             <a 

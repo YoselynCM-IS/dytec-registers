@@ -39,8 +39,8 @@ class SendCodes extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        return $this->from('registro.pagos@majesticeducation-registers.com')
-            ->cc("rp.majesticeducacion@gmail.com")
+        return $this->from('registro.pago@digitaltecenglishcenter.com')
+            ->cc("dytec.pagos@gmail.com")
             ->subject(__("Código"))
             ->markdown('mails.send-code')
             ->with('name', $this->name)

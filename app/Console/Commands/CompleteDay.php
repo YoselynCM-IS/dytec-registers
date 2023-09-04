@@ -42,18 +42,16 @@ class CompleteDay extends Command
      */
     public function handle()
     {
-        $yesterday = new Carbon('yesterday');
-        $status = ['accepted', 'rejected'];
+        // $yesterday = new Carbon('yesterday');
+        // $status = ['accepted', 'rejected'];
 
-        if($yesterday->format('l') == 'Friday'){
-            $status = ['all_week', 'accepted', 'rejected'];
-        }
-        $lista = Excel::raw(new DayExport($yesterday, $yesterday, $status), \Maatwebsite\Excel\Excel::XLSX);
+        // if($yesterday->format('l') == 'Friday'){
+        //     $status = ['all_week', 'accepted', 'rejected'];
+        // }
+        // $lista = Excel::raw(new DayExport($yesterday, $yesterday, $status), \Maatwebsite\Excel\Excel::XLSX);
         
-        // Mail::to('yosecmart@gmail.com')
-        //     ->cc(['yoscm2@gmail.com'])
-        Mail::to('alma.omega09@gmail.com')
-            ->cc(['jennyomega7@gmail.com'])
-            ->send(new SendRegisters($lista, $yesterday));
+        // // Mail::to('yosecmart@gmail.com')
+        // //     ->cc(['yoscm2@gmail.com'])
+        //     ->send(new SendRegisters($lista, $yesterday));
     }
 }

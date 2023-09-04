@@ -3,7 +3,13 @@
         <div>
             <b-row>
                 <b-col>
-                    <b-form-group label="Buscar por escuela:">
+                    <b-form-group label="Buscar por registro:">
+                        <b-form-input v-model="qStudent"
+                            @keyup="student_byschool()"
+                            style="text-transform:uppercase;">
+                        </b-form-input>
+                    </b-form-group>
+                    <!-- <b-form-group label="Buscar por escuela:">
                         <b-form-input v-model="school" @keyup="showSchools()"
                             style="text-transform:uppercase;">
                         </b-form-input>
@@ -16,10 +22,10 @@
                                 {{ school.name }}
                             </a>
                         </div>
-                    </b-form-group>
+                    </b-form-group> -->
                 </b-col>
                 <b-col>
-                    <b-form-group label="Buscar por libro:">
+                    <b-form-group label="Buscar por certificación:">
                         <b-form-input v-model="book" @keyup="showBooks()"
                             style="text-transform:uppercase;">
                         </b-form-input>
@@ -34,15 +40,9 @@
                         </div>
                     </b-form-group>
                 </b-col>
-                <b-col sm="2" class="text-right">
-                    <b-button :disabled="load" pill id="btnPre" 
-                        @click="moreDownloads()">
-                        <b-icon-download></b-icon-download> Descargas
-                    </b-button>
-                </b-col>
             </b-row>
         </div>
-        <b-tabs v-model="tabActivo" content-class="mt-3" fill class="tab-stds">
+        <!-- <b-tabs v-model="tabActivo" content-class="mt-3" fill class="tab-stds">
             <b-tab title="Digital">
                 <b-row class="mb-2">
                     <b-col>
@@ -95,34 +95,37 @@
                     <b-icon-info-circle></b-icon-info-circle> No se encontraron registros
                 </b-alert>
             </b-tab>
-            <b-tab title="Fisico">
+            <b-tab title="Fisico"> -->
                 <b-row class="mb-2">
                     <b-col>
                         <b-pagination v-model="currentPage2" pills
-                            :per-page="perPage" :total-rows="fisicos.length" :disabled="load">
+                            :per-page="perPage" :total-rows="students.length" :disabled="load">
                         </b-pagination>
                     </b-col>
-                    <b-col class="text-right">
-                        <b-form-input v-model="qStudent"
-                            @keyup="student_byschool()"
-                            placeholder="buscar alumno"
-                            style="text-transform:uppercase;">
-                        </b-form-input>
-                    </b-col>
-                    <b-col sm="4" class="text-right">
-                        <b-button id="btnPre" pill :disabled="load || this.selected.length == 0"
+                    <!-- <b-col sm="2" class="text-right">
+                        <b-button :disabled="load" pill id="btnPre" block
+                            @click="moreDownloads()">
+                            <b-icon-download></b-icon-download> Descargas
+                        </b-button>
+                    </b-col> -->
+                    <b-col sm="2" class="text-right">
+                        <b-button id="btnPre" pill :disabled="load || this.selected.length == 0" block
                             @click="mark_delivery()">
                             <b-icon-check></b-icon-check> Marcar entrega
                         </b-button>
-                        <hr>
-                        Borrar seleccionado
-                        <b-button @click="clearSelected" pill size="sm" 
+                    </b-col>
+                    <b-col sm="2">
+                        <b-button @click="selectAllRows" pill block
+                            size="sm" id="btnPre" :disabled="students.length == 0">
+                            <b-icon-check-square-fill></b-icon-check-square-fill> Seleccionar todo
+                        </b-button>
+                        <b-button @click="clearSelected" pill size="sm" block
                             variant="secondary" :disabled="load || this.selected.length == 0">
-                            <b-icon-x></b-icon-x>
+                            <b-icon-x></b-icon-x> Borrar selección
                         </b-button>
                     </b-col>
                 </b-row>
-                <b-table v-if="fisicos.length > 0" :items="fisicos" :fields="fieldsFisicos" class="mb-3"
+                <b-table v-if="students.length > 0" :items="students" :fields="fieldsFisicos" class="mb-3"
                     :per-page="perPage" :current-page="currentPage2" :busy="load"
                     ref="selectableTable" selectable :select-mode="selectMode"
                     @row-selected="onRowSelected">
@@ -153,26 +156,12 @@
                             <b-icon-square></b-icon-square>
                         </template>
                     </template>
-                    <template #thead-top="data">
-                            <b-tr>
-                                <b-th colspan="4"></b-th>
-                                <b-th colspan="2" class="text-right">
-                                    Seleccionar todo
-                                </b-th>
-                                <b-th>
-                                    <b-button @click="selectAllRows" pill 
-                                        size="sm" id="btnPre" :disabled="school == null || school == '' || school == ' '">
-                                        <b-icon-check-square-fill></b-icon-check-square-fill>
-                                    </b-button>
-                                </b-th>
-                            </b-tr>
-                        </template>
                 </b-table>
                 <b-alert v-else show variant="dark" class="text-center">
                     <b-icon-info-circle></b-icon-info-circle> No se encontraron registros
                 </b-alert>
-            </b-tab>
-        </b-tabs>
+            <!-- </b-tab>
+        </b-tabs> -->
         
         <!-- SUBIR ARCHIVO PARA ENVIAR CODIGOS -->
         <b-modal v-model="modalShow" hide-footer title="Subir archivo">
@@ -270,15 +259,16 @@
 // SWEETALERT
 import swal from 'sweetalert';
 export default {
-    props: ['registers1', 'registers2'],
+    props: ['registers'],
     data(){
         return {
             modalShow: false,
             errorFormat: '',
             load: false,
             file: null,
-            digitales: this.registers1,
-            fisicos: this.registers2,
+            digitales: [],
+            fisicos: [],
+            students: this.registers,
             items: [],
             fieldsDigital: [
                 {key: 'index', label: 'N.'},
@@ -289,12 +279,11 @@ export default {
                 {key: 'codes', label: 'Información códigos'}
             ],
             fieldsFisicos: [
-                {key: 'index', label: 'N.'},
-                {key: 'school_id', label: 'Escuela'},
-                {key: 'book', label: 'Libro'},
-                {key: 'name', label: 'Nombre'},
-                {key: 'email', label: 'Correo electronico'},
-                {key: 'codes', label: 'Libro'},
+                { key: 'index', label: 'N.' },
+                { key: 'name', label: 'Nombre' },
+                { key: 'email', label: 'Correo electrónico' },
+                {key: 'book', label: 'Certificación'},
+                {key: 'codes', label: 'Status'},
                 {key: 'selected', label: ''}
             ],  
             school: null,
@@ -372,7 +361,7 @@ export default {
         },
         showBooks(){
             if(this.book.length > 0 && this.book !== ' '){
-                axios.get('/books/show_books', {params: {book: this.book}}).then(response => {
+                axios.get('/show_books', {params: {book: this.book}}).then(response => {
                     this.books = response.data;
                 }).catch(error => {
                     // PENDIENTE
@@ -398,8 +387,7 @@ export default {
             axios.get('/student/books_to_email', {params: {book: book.name}}).then(response => {
                 this.books = [];
                 this.book = book.name;
-                this.digitales = response.data.digitales;
-                this.fisicos = response.data.fisicos;
+                this.students = response.data;
                 this.qStudent = null;
                 this.validar_busquedas(false, true);
             }).catch(error => {
@@ -435,9 +423,12 @@ export default {
         },
         mark_delivery(){
             this.load = true;
-            let form = { school: this.school, selected: this.selected }
+            let form = { selected: this.selected }
             axios.put('/student/mark_delivery', form).then(response => {
-                this.fisicos = response.data;
+                swal("OK", "Los registros se marcaron correctamente.", "success")
+                    .then((value) => {
+                        location.reload();
+                    });
                 this.load = false;
             }).catch(error => {
                 // PENDIENTE
@@ -479,7 +470,7 @@ export default {
             this.load = true;
             axios.get('/student/by_school_ne', {params: {student: this.qStudent, school_id: this.school_id }}).then(response => {
                 // this.validar_busquedas(false, false);
-                this.fisicos = response.data;
+                this.students = response.data;
                 this.load = false;
             }).catch(error => {
                 // PENDIENTE

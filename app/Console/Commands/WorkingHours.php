@@ -42,12 +42,10 @@ class WorkingHours extends Command
      */
     public function handle()
     {
-        $hoy = Carbon::now();
-        $status = ['accepted', 'rejected'];
+        // $hoy = Carbon::now();
+        // $status = ['accepted', 'rejected'];
         
-        $lista = Excel::raw(new DayExport($hoy, $hoy,$status), \Maatwebsite\Excel\Excel::XLSX);
-        Mail::to('alma.omega09@gmail.com')
-            ->cc(['jennyomega7@gmail.com'])
-            ->send(new SendRegisters($lista, $hoy));
+        // $lista = Excel::raw(new DayExport($hoy, $hoy,$status), \Maatwebsite\Excel\Excel::XLSX);
+        //     ->send(new SendRegisters($lista, $hoy));
     }
 }

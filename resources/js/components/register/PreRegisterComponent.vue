@@ -54,6 +54,11 @@
                                 Numero de teléfono requerido, igual a 10 digitos.
                             </div>
                         </b-form-group>
+                        <b-form-group label="Plantel:">
+                            <b-form-select v-model="form.school_id" :options="schools"
+                                required :disabled="load"
+                            ></b-form-select>
+                        </b-form-group>
                     </b-col>
                 </b-row>
                 <hr>
@@ -65,7 +70,7 @@
                     <b-col sm="6">
                         <b-form-group>
                             <label><b>Certificación</b></label>
-                            <b-form-input v-model="queryBook" placeholder="Buscar..."
+                            <b-form-input v-model="queryBook" placeholder="Buscar..." required
                                 @keyup="showBooks()" style="text-transform:uppercase;">
                             </b-form-input>
                             <div class="list-group" v-if="books.length" id="listR">
@@ -94,6 +99,10 @@
                             <b-col sm="5">${{ form.price | numeral('0,0[.]00') }}</b-col>
                         </b-row>
                         <b-row>
+                                <b-col class="text-right"><label>IVA 16%</label></b-col>
+                                <b-col sm="5">${{ form.w_iva | numeral('0,0[.]00') }}</b-col>
+                            </b-row>
+                        <b-row>
                             <b-col class="text-right"><label>Total</label></b-col>
                             <b-col sm="5">${{ form.a_depositar | numeral('0,0[.]00') }}</b-col>
                         </b-row>
@@ -101,7 +110,7 @@
                 </b-row>
                 <hr>
                 <b-alert variant="secondary" show>
-                    <i class="fa fa-info-circle"></i> Los datos que ingresaras a continuación debes obtenerlos de tu orden de compra y comprobante de pago.
+                    <i class="fa fa-info-circle"></i> Los datos que ingresaras a continuación debes obtenerlos de tu comprobante de pago.
                 </b-alert>
                 <h5><b>Comprobante(s) de pago</b></h5>
                 <b-row>
@@ -114,11 +123,14 @@
                         </b-form-group>
                     </b-col>
                     <b-col sm="5">
-                        <b-form-group>
-                            <label><br>Número de orden</label>
+                        <b-form-group id="tooltip-target-pedido">
+                            <label><br>Número del pedido</label>
                             <b-form-input v-model="form.orden" :disabled="load"
-                                type="number" required
+                                type="number"
                             ></b-form-input>
+                            <b-tooltip target="tooltip-target-pedido" triggers="hover">
+                                Introducir solo si realizaste tu pedido a través de nuestra página https://www.digitaltecenglishcenter.com/inicio/
+                            </b-tooltip>
                         </b-form-group>
                     </b-col>
                     <b-col sm="2" class="text-right">
@@ -327,7 +339,7 @@ export default {
             form: {
                 name: '', lastname: '', lastname2: '', email: '',
                 telephone: null, school_id: null, school: null,
-                book: null, quantity: 1, price: 0, a_depositar: 0,
+                book: null, quantity: 1, price: 0, w_iva: 0, a_depositar: 0,
                 file: null,
                 comprobantes: [{
                     type: null, folio: '', auto: '', clave: null, 
@@ -399,8 +411,7 @@ export default {
         },
         save_all(){
             let fd = this.attributes();
-            console.log(fd);
-            axios.post('/student/preregister', fd).then(response => {
+            axios.post('/save_register', fd).then(response => {
                 if(response.data === 3){
                     swal("Listo", "Tus datos se guardaron correctamente. Aproximadamente en un lapso de 48 a 72 horas hábiles te haremos llegar un correo electrónico donde te notificaremos si tu registro de pago ha sido validado. Gracias.", "success")
                         .then((value) => {
@@ -438,6 +449,7 @@ export default {
             formData.append('book', this.form.book);
             formData.append('quantity', this.form.quantity);
             formData.append('price', this.form.price);
+            formData.append('w_iva', this.form.w_iva);
             formData.append('a_depositar', this.form.a_depositar);
             formData.append('file', this.form.file);
             formData.append('teacher', this.form.teacher);
@@ -448,19 +460,9 @@ export default {
             
             return formData;
         },
-        selectPlantel(){
-            this.selSchool = true;
-            axios.get('/schools/get_books', {params: {school_id: this.form.school}}).then(response => {
-                this.form.book = null;
-                this.school_select(response.data);
-                this.selSchool = false;
-            }).catch(error => {
-                this.selSchool = false;
-            });
-        },
         showBooks() {
             if (this.queryBook.length > 0) {
-                axios.get('/books/show_books', { params: { book: this.queryBook } }).then(response => {
+                axios.get('/show_books', { params: { book: this.queryBook } }).then(response => {
                     this.books = response.data;
                 }).catch(error => {
                     this.books = [];
@@ -470,16 +472,19 @@ export default {
             }
         },
         selectBook(book) {
-            this.form.school_id = book.schools[0].id;
-            this.form.school = book.schools[0].name;
-            this.form.price = book.schools[0].pivot.price;
-            //PENDIENTE, CAMBIAR YA QUE LA RELACION ES MUCHOS A MUCHOS
             this.form.book = book.name;
+            this.form.school = book.editorial;
+            this.form.price = book.price;
             this.form.quantity = 1;
-            this.form.a_depositar = parseFloat(this.form.price) * parseInt(this.form.quantity);
+            this.get_total();
             this.selBook = false;
             this.queryBook = book.name;
             this.books = [];
+        },
+        get_total() {
+            let t = parseFloat(this.form.price) * parseInt(this.form.quantity);
+            this.form.w_iva = t * 0.16;
+            this.form.a_depositar = t + this.form.w_iva;
         },
         addComprobante(){
             this.form.comprobantes.push({
@@ -488,9 +493,9 @@ export default {
             });
         },
         setQuantity(){
-            if(parseInt(this.form.quantity) < 1) this.form.quantity = 1;
-
-            this.form.a_depositar = parseFloat(this.form.price) * parseInt(this.form.quantity);
+            if (parseInt(this.form.quantity) < 1) this.form.quantity = 1;
+            
+            this.get_total();
         },
         acum_total(){
             this.a_depositar = 0;

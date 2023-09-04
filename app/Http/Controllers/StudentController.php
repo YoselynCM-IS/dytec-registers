@@ -53,8 +53,7 @@ class StudentController extends Controller
             'quantity' => ['required', 'numeric', 'min:1'],
             'telephone' => ['required', 'numeric', 'min:1000000000'],
             'file' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5072'],
-            'numcuenta' => ['required', 'numeric', 'min:6'],
-            'orden' => ['required', 'numeric', 'min:3']
+            'numcuenta' => ['required', 'numeric', 'min:6']
         ]);
         
         // BUSCAR SI EXISTE EL ALUMNO
@@ -266,22 +265,10 @@ class StudentController extends Controller
     }
 
     public function books_to_email(Request $request){
-        $digitales = Student::where('book', $request->book)
-                    ->where('book', 'like', '%DIGITAL%')
-                    ->where('book', 'NOT LIKE', '%PACK%')
+        $students = Student::where('book', $request->book)
                     ->where('check', 'accepted')->with('school')
                     ->orderBy('created_at', 'asc')->get();
-        $fisicos = Student::where('book', $request->book)
-                    ->where('check', 'accepted')->with('school')
-                    ->where(function($query) {
-                        $query->where('book', 'NOT LIKE', '%DIGITAL%')
-                                ->orWhere('book', 'like', '%PACK%');
-                    })->orderBy('created_at', 'asc')->get();
-        $data = [
-            'digitales' => $digitales,
-            'fisicos'   => $fisicos
-        ];
-        return response()->json($data);
+        return response()->json($students);
     }
 
     public function delete(Request $request){
@@ -316,7 +303,7 @@ class StudentController extends Controller
 
             $student->update(['check' => 'accepted', 'validate' => 'NO ENVIADO']);
 
-            $message = 'Tu registro se ha completado. Los datos que ingresaste en tu pre-registro han sido verificados correctamente.';
+            $message = '';
 
             \DB::commit();
         }  catch (Exception $e) {
@@ -374,20 +361,15 @@ class StudentController extends Controller
     }
 
     public function by_school_ne(Request $request){
-        $students = Student::where('school_id', $request->school_id)
-                        ->where('name','like', '%'.$request->student.'%')
+        $students = Student::where('name','like', '%'.$request->student.'%')
                         ->where('check', 'accepted')
-                        ->where(function($query) {
-                            $query->where('book', 'NOT LIKE', '%DIGITAL%')
-                                    ->orWhere('book', 'like', '%PACK%');
-                        })->with('school')->orderBy('name', 'asc')->get();
+                        ->with('school')->orderBy('created_at', 'asc')->get();
 
         return response()->json($students);
     }
 
     public function mark_delivery(Request $request){
         $selected = $request->selected;
-        $school = $request->school;
 
         \DB::beginTransaction();
         try {
@@ -404,15 +386,8 @@ class StudentController extends Controller
         }  catch (Exception $e) {
             \DB::rollBack();
         }
-        $school = School::whereName($school)->first();
-        $fisicos = Student::where('school_id', $school->id)
-                    ->where('check', 'accepted')->with('school')
-                    ->where(function($query) {
-                        $query->where('book', 'NOT LIKE', '%DIGITAL%')
-                                ->orWhere('book', 'like', '%PACK%');
-                    })->orderBy('book', 'asc')->get();
-
-        return response()->json($fisicos);
+    
+        return response()->json();
     }
 
     public function down_by_book($book){
@@ -516,7 +491,6 @@ class StudentController extends Controller
 
     public function send_error(Request $request){
         $error = print_r($request->error, true);
-        // Mail::to('yoselynmajestice@gmail.com')->send(new ErrorPreregister($error));
         return response()->json($error);
     }
 }

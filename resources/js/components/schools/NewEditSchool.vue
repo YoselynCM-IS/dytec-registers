@@ -9,7 +9,7 @@
             </b-form-group>
             <div class="text-right">
                 <b-button pill :disabled="load" id="btnPre" type="submit">
-                    <b-icon-plus-circle></b-icon-plus-circle> Guardar
+                    <b-icon-check></b-icon-check> Guardar
                 </b-button>
             </div>
         </b-form>

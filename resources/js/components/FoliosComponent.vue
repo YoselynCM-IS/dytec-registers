@@ -18,7 +18,7 @@
                 </b-button>
             </b-col>
             <b-col sm="3" class="text-right">
-                <b-button v-if="role == 'manager' || role == 'administrator' || (userid == 7 || userid == 17)" id="btnPre" pill 
+                <b-button id="btnPre" pill 
                     @click="modalShow = !modalShow">
                     <b-icon-plus-circle></b-icon-plus-circle> Subir depósitos
                 </b-button>
@@ -115,7 +115,7 @@
                 </b-col>
             </b-row>
             <b-row class="mb-2">
-                <b-col>Folio / Concepto / Referencia</b-col>
+                <b-col>Concepto</b-col>
                 <b-col>
                     <b-input v-model="referencia"></b-input>
                 </b-col>
@@ -126,7 +126,7 @@
                     </b-button>
                 </b-col>
             </b-row>
-            <hr>
+            <!-- <hr>
             <b-row v-if="role == 'manager'" class="mb-2">
                 <b-col>Banco</b-col>
                 <b-col>
@@ -140,7 +140,7 @@
                         <i class="fa fa-search"></i>
                     </b-button>
                 </b-col>
-            </b-row>
+            </b-row> -->
         </b-modal>
         <b-modal v-model="modalMarcar" hide-footer hide-header size="sm" centered>
             <div class="text-center">
@@ -161,7 +161,7 @@ export default {
             foliosData: {},
             fields: [
                 {key: 'index', label: 'N.'}, 
-                'fecha', 'concepto', 'abono', 'saldo',
+                'fecha', 'concepto', 'abono',
                 {key: 'occupied', label: 'Registrado'},
                 {key: 'marcado_por', label: 'Marcado por'},
                 {key: 'created_at', label: 'Se subio el:'}
@@ -293,7 +293,7 @@ export default {
                     swal(`${response.data.guardados} de ${response.data.total}`, `${response.data.guardados} de ${response.data.total} depósitos se subieron correctamente.`, "success")
                     .then((value) => {
                         location.reload();
-                    });;
+                    });
                     this.load = false;
                 }).catch(error => {
                     this.load = false;
