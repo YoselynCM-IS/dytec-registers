@@ -85,7 +85,7 @@ class RegistroController extends Controller
     }
 
     public function update_status(){
-        $students = Student::where('check', 'process')->with('registros')->limit(25)->get();
+        $students = Student::where('check', 'process')->with('registros')->limit(50)->get();
         
         \DB::beginTransaction();
         try {
@@ -137,10 +137,8 @@ class RegistroController extends Controller
         foreach ($estudiantes as $estudiante) {
             $s = Student::whereId($estudiante['student']['id'])->first();
             if($s->check == 'accepted'){
-                if($student->school_id != 1){ // NO ENVIAR CORREO A LOS ALUMNOS DE CAMPECHE
-                    Mail::to($s->email)->send(new PreRegister($estudiante['message'], $s));
-                    $s->update(['validate' => 'ENVIADO']);
-                }
+                Mail::to($s->email)->send(new PreRegister($estudiante['message'], $s));
+                $s->update(['validate' => 'ENVIADO']);
             }
         }
         
@@ -241,10 +239,7 @@ class RegistroController extends Controller
     }
 
     public function update_rejected(Request $request){
-        $students = Student::where('check', 'rejected')
-                    ->where('created_at', 'like', '%'.$request->number_rejected.'%')
-                    ->with('registros')->orderBy('name', 'desc')
-                    ->get();
+        $students = Student::where('check', 'rejected')->with('registros')->get();
         \DB::beginTransaction();
         try {
             $estudiantes = array();
@@ -285,11 +280,6 @@ class RegistroController extends Controller
                             ->where('status', 'process')->count();
                     if($count_process === 0){
                         $student->update(['check' => 'rejected']);
-                        $message = '';
-                        // Puedes consultar tus datos ingresando al siguiente link (Solo estará disponible por 3 días).
-                        if($student->validate == 'NO ENVIADO' && $student->school_id != 76){
-                            array_push($estudiantes, ['student' => $student, 'message' => $message]);
-                        }
                     }
                 }
 
@@ -302,11 +292,9 @@ class RegistroController extends Controller
         
         foreach ($estudiantes as $estudiante) {
             $s = Student::whereId($estudiante['student']['id'])->first();
-            if($s->check !== 'process'){
-                if($student->school_id != 1){ // NO ENVIAR CORREO A LOS ALUMNOS DE CAMPECHE
-                    Mail::to($s->email)->send(new PreRegister($estudiante['message'], $s));
-                    $s->update(['validate' => 'ENVIADO']);
-                }
+            if($s->check == 'accepted'){
+                Mail::to($s->email)->send(new PreRegister($estudiante['message'], $s));
+                $s->update(['validate' => 'ENVIADO']);
             }
         }
         

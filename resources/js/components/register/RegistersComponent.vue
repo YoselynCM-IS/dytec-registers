@@ -471,7 +471,7 @@ export default {
             axios.put('/registros/update_status').then(response => {
                 this.registros = response.data;
                 this.load = false;
-                swal("OK", "Se validaron máximo 25 registros en proceso.", "success");
+                swal("OK", "Se validaron los registros rechazados.", "success");
             }).catch(error => {
                 // PENDIENTE
                 this.load = false;
