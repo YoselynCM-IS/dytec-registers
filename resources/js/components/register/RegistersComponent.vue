@@ -17,7 +17,7 @@
                     id="btnPre" pill @click="updateStatus()" block>
                     <b-icon-arrow-clockwise></b-icon-arrow-clockwise> Validar pagos
                 </b-button>
-                <b-button class="mt-1" v-if="role === 'manager'" :disabled="load" block
+                <b-button class="mt-1" :disabled="load" block
                     variant="danger" pill @click="updateRejected()">
                     <b-icon-arrow-clockwise></b-icon-arrow-clockwise> Revisar rechazados
                 </b-button>
@@ -75,11 +75,11 @@
                     <div v-if="!data.item.book.includes('DIGITAL')">
                         <div v-if="data.item.delivery == 0">
                             <b-badge pill variant="warning">
-                                <i class="fa fa-exclamation-triangle"></i> Libro no entregado
+                                <i class="fa fa-exclamation-triangle"></i> No entregado
                             </b-badge>
                         </div>
                         <b-badge v-else pill variant="success">
-                            <i class="fa fa-check"></i> Libro entregado
+                            <i class="fa fa-check"></i> Entregado
                         </b-badge>
                     </div>
                     <div v-else>
