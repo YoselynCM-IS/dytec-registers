@@ -238,7 +238,7 @@ class RegistroController extends Controller
                 $bank !== 'INBURSA' && $bank !== 'SANTANDER' && $bank !== 'SCOTIABANK';
     }
 
-    public function update_rejected(Request $request){
+    public function update_rejected(){
         $students = Student::where('check', 'rejected')->with('registros')->get();
         \DB::beginTransaction();
         try {

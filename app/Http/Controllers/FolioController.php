@@ -41,38 +41,27 @@ class FolioController extends Controller
     }
 
     public function search_folios(Request $request){
-        if($request->bank !== 'BANCOMER' && $request->bank !== 'OTRO'){
-            $folios = Folio::where('fecha',$request->fecha)
-            ->where('abono','like','%'.$request->abono.'%')
-            ->where('concepto','like','%'.$request->bank.'%')
-            ->where('occupied', 0)
-            ->get();
-        } 
         if($request->bank === 'BANCOMER'){
             $folios = Folio::where('fecha',$request->fecha)
-            ->where('abono','like','%'.$request->abono.'%')
-            ->where(function($query){
-                $query->where('concepto', 'like', '%DEPOSITO EFECTIVO PRACTIC/******7206%')
-                ->orWhere('concepto', 'like', '%DEPOSITO EN EFECTIVO/%')
-                ->orWhere('concepto', 'like', '%DEPOSITO POR CORRECCION/%')
-                ->orWhere('concepto', 'like', '%PAGO CUENTA DE TERCERO/%');
-            })
-            ->where('occupied', 0)
-            ->get();
+                ->where('abono','like','%'.$request->abono.'%')
+                ->where(function($query){
+                    $query->where('concepto', 'like', '%DEPOSITO EFECTIVO PRACTIC/%')
+                    ->orWhere('concepto', 'like', '%DEPOSITO EN EFECTIVO/%')
+                    ->orWhere('concepto', 'like', '%DEPOSITO POR CORRECCION/%')
+                    ->orWhere('concepto', 'like', '%PAGO CUENTA DE TERCERO/%');
+                })
+                ->where('occupied', 0)
+                ->get();
         }
         if($request->bank === 'OTRO'){
-            $folios = Folio::where('concepto', 'NOT LIKE', '%DEPOSITO EFECTIVO PRACTIC/******7206%')
-            ->where('concepto', 'NOT LIKE', '%DEPOSITO EN EFECTIVO/%')
-            ->where('concepto', 'NOT LIKE', '%DEPOSITO POR CORRECCION/%')
-            ->where('concepto', 'NOT LIKE', '%PAGO CUENTA DE TERCERO/%')
-            ->where('concepto', 'NOT LIKE', '%BANAMEX%')->where('concepto', 'NOT LIKE', '%AZTECA%')
-            ->where('concepto', 'NOT LIKE', '%BANCOPPEL%')->where('concepto', 'NOT LIKE', '%BAJIO%')
-            ->where('concepto', 'NOT LIKE', '%BANORTE%')->where('concepto', 'NOT LIKE', '%HSBC%')
-            ->where('concepto', 'NOT LIKE', '%SANTANDER%')->where('concepto', 'NOT LIKE', '%SCOTIABANK%')
-            ->where('fecha',$request->fecha)
-            ->where('abono','like','%'.$request->abono.'%')
-            ->where('occupied', 0)
-            ->get();
+            $folios = Folio::where('concepto', 'NOT LIKE', '%DEPOSITO EFECTIVO PRACTIC/%')
+                ->where('concepto', 'NOT LIKE', '%DEPOSITO EN EFECTIVO/%')
+                ->where('concepto', 'NOT LIKE', '%DEPOSITO POR CORRECCION/%')
+                ->where('concepto', 'NOT LIKE', '%PAGO CUENTA DE TERCERO/%')
+                ->where('fecha',$request->fecha)
+                ->where('abono','like','%'.$request->abono.'%')
+                ->where('occupied', 0)
+                ->get();
         }
         return response()->json($folios);
     }

@@ -17,6 +17,10 @@
                     id="btnPre" pill @click="updateStatus()" block>
                     <b-icon-arrow-clockwise></b-icon-arrow-clockwise> Validar pagos
                 </b-button>
+                <b-button class="mt-1" v-if="role === 'manager'" :disabled="load" block
+                    variant="danger" pill @click="updateRejected()">
+                    <b-icon-arrow-clockwise></b-icon-arrow-clockwise> Revisar rechazados
+                </b-button>
             </b-col>
         </b-row>
             <!-- <b-col sm="3" class="text-right">
@@ -36,12 +40,6 @@
             <b-row>
                 <b-col>
                     <b-form-datepicker v-model="number_rejected"></b-form-datepicker>
-                </b-col>
-                <b-col>
-                    <b-button class="mt-1" :disabled="load || number_rejected == null" block
-                        variant="danger" pill @click="updateRejected()">
-                        <b-icon-arrow-clockwise></b-icon-arrow-clockwise> Revisar rechazados
-                    </b-button>
                 </b-col>
             </b-row>
         </b-col> -->
@@ -471,7 +469,7 @@ export default {
             axios.put('/registros/update_status').then(response => {
                 this.registros = response.data;
                 this.load = false;
-                swal("OK", "Se validaron los registros rechazados.", "success");
+                swal("OK", "Se validaron los registros.", "success");
             }).catch(error => {
                 // PENDIENTE
                 this.load = false;
@@ -598,8 +596,7 @@ export default {
         },
         updateRejected(){
             this.load = true;
-            let form = { number_rejected: this.number_rejected };
-            axios.put('/registros/update_rejected', form).then(response => {
+            axios.put('/registros/update_rejected').then(response => {
                 this.registros = response.data;
                 this.load = false;
                 swal("OK", "Revisión de rechazados, terminada correctamente.", "success");
